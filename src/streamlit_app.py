@@ -14,6 +14,17 @@ def get_datasets():
     except requests.exceptions.RequestException as e:
         st.error(f"Error fetching datasets: {e}")
         return []
+    
+# Function to fetch models from the API
+@st.cache
+def get_models():
+    try:
+        response = requests.get(f"{API_BASE_URL}/models")
+        response.raise_for_status()
+        return response.json().get("models", [])
+    except requests.exceptions.RequestException as e:
+        st.error(f"Error fetching models: {e}")
+        return []
 
 # Function to fetch model configurations from the API
 @st.cache
@@ -45,7 +56,7 @@ def train_page():
         st.warning("No datasets available for training.")
         return
 
-    models = ["LogisticRegression", "CatBoost"]
+    models = get_models()
     model = st.selectbox("Select Model", models)
 
     dataset = st.selectbox("Select Dataset", datasets)
@@ -53,13 +64,11 @@ def train_page():
     st.subheader("Model Parameters")
 
     params = {}
-    model_configs = get_model_configs()
-    model_config = model_configs.get(model, {})
 
-    if model == "LogisticRegression":
+    if model == "logistic_regression":
         params["C"] = st.number_input("Regularization Strength (C)", min_value=0.01, value=1.0)
         params["max_iter"] = st.slider("Maximum Iterations", min_value=100, max_value=1000, value=100)
-    elif model == "CatBoost":
+    elif model == "catboost":
         params["iterations"] = st.slider("Iterations", min_value=100, max_value=1000, value=500)
         params["depth"] = st.slider("Depth", min_value=3, max_value=10, value=6)
         params["learning_rate"] = st.number_input("Learning Rate", min_value=0.01, value=0.1)
@@ -69,7 +78,23 @@ def train_page():
             "dataset": {"name": dataset},
             "model": {
                 "name": model,
-                "parameters": params
+                "configuration": {
+                    "preprocessor": {
+                        "preprocessors": [
+                            {
+                                "name": "tfidf",
+                                "params": {}
+                            },
+                            {
+                                "name": "drop",
+                                "params": {
+                                    "columns": ["text"]
+                                }
+                            }
+                        ]
+                    },
+                    "model_configuration": params,
+                }
             }
         }
 
@@ -102,8 +127,8 @@ def predict_page():
             return
 
         predict_request = {
-            "model_name": model,
-            "input_data": input_text
+            "model_artifact_name": model,
+            "data": [input_text],
         }
 
         try:
@@ -112,7 +137,7 @@ def predict_page():
                 response.raise_for_status()
                 result = response.json()
                 st.success("Prediction successful!")
-                st.write("**Prediction:**", result.get("prediction"))
+                st.write("**Prediction:**", result.get("predictions")[0])
         except requests.exceptions.RequestException as e:
             st.error(f"Error during prediction: {e}")
 
