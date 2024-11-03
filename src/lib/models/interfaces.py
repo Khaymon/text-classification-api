@@ -40,7 +40,7 @@ class ModelInterface(abc.ABC):
         path.mkdir(parents=True, exist_ok=False)
 
         utils.PickleHelper.save(self.preprocessor, path / "preprocessor.pkl")
-        utils.JsonHelper.save(asdict(self.config), path / "config.json")
+        utils.JsonHelper.save(self.config.model_dump(), path / "config.json")
 
         self._save(path)
 
@@ -51,9 +51,17 @@ class ModelInterface(abc.ABC):
         self.config = ModelConfig(**utils.JsonHelper.load(path / "config.json"))
 
         return self._load(path)
+
+    @classmethod
+    def load(cls, path: Path) -> T.Self:
+        config = ModelConfig(**utils.JsonHelper.load(path / "config.json"))
+        model = cls(config)
+        model.preprocessor = utils.PickleHelper.load(path / "preprocessor.pkl")
+        return model._load(path)
     
+    @classmethod
     @abc.abstractmethod
-    def _save(self, path: Path) -> None:
+    def _save(cls, path: Path) -> None:
         ...
 
     @abc.abstractmethod
