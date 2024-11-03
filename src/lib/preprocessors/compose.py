@@ -12,6 +12,12 @@ from src.lib.preprocessors.tf_idf import TfIdfPreprocessor
 class ComposePrerpocessorConfig(BaseModel):
     preprocessors: list[DataPreprocessorConfig]
 
+    @classmethod
+    def from_dict(cls, values: dict) -> "ComposePrerpocessorConfig":
+        preprocessors = [DataPreprocessorConfig(**config) for config in values["preprocessors"]]
+
+        return cls(name=values["name"], preprocessors=preprocessors)
+
 
 class ComposePreprocessor(DataPreprocessorInterface):
     NAME = "compose"

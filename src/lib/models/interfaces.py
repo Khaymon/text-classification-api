@@ -1,9 +1,9 @@
 import abc
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from pathlib import Path
 import typing as T
 
-from src.common.utils import PickleHelper
+from src.common.utils import JsonHelper, PickleHelper
 from src.lib.datasets.interfaces import Data, Dataset, Targets
 from src.lib.preprocessors.compose import ComposePreprocessor, ComposePrerpocessorConfig
 from pydantic import BaseModel
@@ -31,11 +31,13 @@ class ModelInterface(abc.ABC):
 
     def save(self, path: Path) -> None:
         PickleHelper.save(self.preprocessor, path / "preprocessor.pkl")
+        JsonHelper.save(asdict(self.config), path / "config.json")
 
         self._save(path)
 
     def load(self, path: Path) -> T.Self:
         self.preprocessor = PickleHelper.load(path / "preprocessor.pkl")
+        self.config = ModelConfig.from_dict(JsonHelper.load(path / "config.json"))
 
         return self._load(path)
     
