@@ -5,7 +5,7 @@ import typing as T
 import pandas as pd
 
 
-class Data(abc.ABC):
+class Data:
     def __init__(self, texts: T.Sequence[str]):
         self._texts = list(texts)
 
@@ -16,7 +16,7 @@ class Data(abc.ABC):
         return pd.Series(self._texts, name="text")
 
 
-class Targets(abc.ABC):
+class Targets:
     def __init__(self, targets: T.Sequence[int]):
         self._targets = targets
 
@@ -27,7 +27,7 @@ class Targets(abc.ABC):
         return pd.Series(self._targets, name="target")
 
 
-class Dataset(abc.ABC):
+class Dataset:
     def __init__(self, data: Data, targets: Targets):
         self._data = data
         self._targets = targets
@@ -42,3 +42,11 @@ class Dataset(abc.ABC):
 
     def to_pandas(self) -> pd.DataFrame:
         return pd.concat([self._data.to_pandas(), self._targets.to_pandas()], axis=1)
+
+    @abc.abstractmethod
+    @classmethod
+    def load(cls, *args, **kwargs) -> "Dataset":
+        """
+            Download the dataset from some source, preprocess it and create Dataset
+        """
+        ...
