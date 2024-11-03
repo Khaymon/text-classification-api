@@ -41,4 +41,4 @@ class TrainDataset(abc.ABC):
         return deepcopy(self._targets)
 
     def to_pandas(self) -> pd.DataFrame:
-        return pd.concat([self._dataset.to_pandas(), self._targets.to_pandas()])
+        return pd.concat([self._dataset.to_pandas(), self._targets.to_pandas()], axis=1)
