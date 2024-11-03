@@ -4,9 +4,13 @@ import typing as T
 
 import pandas as pd
 
+import src.common.utils as utils
 from src.lib.preprocessors.drop import DropPreprocessor
 from src.lib.preprocessors.interfaces import DataPreprocessorConfig, DataPreprocessorInterface
 from src.lib.preprocessors.tf_idf import TfIdfPreprocessor
+
+
+LOGGER = utils.initialize_logging(__name__)
 
 
 class ComposePrerpocessorConfig(BaseModel):
@@ -29,6 +33,8 @@ class ComposePreprocessor(DataPreprocessorInterface):
         result_data = deepcopy(data)
         for preprocessor in self._preprocessors:
             result_data = preprocessor.transform(result_data)
+
+        LOGGER.info(f"Obtained features {list(result_data.columns)} after preprocessing")
 
         return result_data
 

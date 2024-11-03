@@ -1,6 +1,11 @@
 import json
+import logging
 from pathlib import Path
 import pickle
+
+
+DEFAULT_LOGGER_HANDLER_NAME = 'default'
+DEFAULT_LOGGER_FORMAT = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s'
 
 
 class JsonHelper:
@@ -25,3 +30,18 @@ class PickleHelper:
     def load(path: Path):
         with open(path, "rb") as fin:
             return pickle.load(fin)
+
+
+def initialize_logging(name: str | None = None) -> logging.Logger:
+    """Initialize logging with reasonable format."""
+
+    log = logging.getLogger(name)
+    log.setLevel(logging.INFO)
+    _stream_handler = logging.StreamHandler()
+    _stream_handler.set_name(DEFAULT_LOGGER_HANDLER_NAME)
+    _stream_handler.setLevel(logging.DEBUG)
+    _stream_handler.setFormatter(logging.Formatter(DEFAULT_LOGGER_FORMAT))
+    log.addHandler(_stream_handler)
+    log.propagate = False
+
+    return log
