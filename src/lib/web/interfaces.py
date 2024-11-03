@@ -35,5 +35,10 @@ class TrainRequest(BaseModel):
 
 
 class PredictRequest(BaseModel):
-    dataset: DatasetOptions
-    model: ModelOptions
+    dataset: list[str]
+    model_artifact_name: str
+
+    @field_validator("model_artifact_name")
+    def validate_model_artifact_name(cls, v):
+        # TODO: validate model artifact name
+        return v
