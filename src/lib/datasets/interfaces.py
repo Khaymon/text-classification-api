@@ -28,7 +28,9 @@ class Targets:
 
 
 class Dataset:
-    def __init__(self, data: Data, targets: Targets):
+    def __init__(self, name: str, data: Data, targets: Targets):
+        self.name = name
+
         self._data = data
         self._targets = targets
 
