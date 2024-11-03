@@ -40,7 +40,6 @@ async def train(request: TrainRequest):
 
 @app.post("/models/predict")
 async def predict(request: PredictRequest):
-    # return {"args": request.model_dump()}
     return predict_handler(request)
 
 

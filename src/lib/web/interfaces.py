@@ -35,7 +35,7 @@ class TrainRequest(BaseModel):
 
 
 class PredictRequest(BaseModel):
-    dataset: list[str]
+    data: list[str]
     model_artifact_name: str
 
     @field_validator("model_artifact_name")

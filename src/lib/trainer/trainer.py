@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 import src.common.utils as utils
@@ -15,13 +17,10 @@ class Trainer:
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
 
-    def fit(self) -> Metrics | None:
+    def fit(self) -> ModelInterface:
         LOGGER.info(f"Fit model {self.model.NAME} with dataset {self.train_dataset.NAME}")
-
         self.model = self.model.fit(self.train_dataset)
-        if self.test_dataset:
-            predictions = self.model.predict(self.test_dataset.data)
-            return self.evaluate(predictions, self.test_dataset.targets)
+        return self.model
 
     def predict(self, data: Data | None = None) -> Targets:
         data = data or self.test_dataset.data if self.test_dataset is not None else None
@@ -32,11 +31,16 @@ class Trainer:
 
         return self.model.predict(data)
     
-    @staticmethod
-    def evaluate(predicted: Targets, true: Targets) -> Metrics:
+    def evaluate(self, dataset: Dataset | None = None) -> Metrics | None:
+        if dataset is None:
+            dataset = self.test_dataset
+
+        predictions = self.model.predict(dataset.data)
+        return self.compute_metrics(predictions, dataset.targets)
+
+    def compute_metrics(self, predicted: Targets, true: Targets) -> Metrics:
         true_list = true.to_list()
         predicted_list = predicted.to_list()
-
         return Metrics(
             accuracy=float(accuracy_score(true_list, predicted_list)),
             f1=float(f1_score(true_list, predicted_list)),
