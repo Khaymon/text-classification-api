@@ -4,8 +4,6 @@ import typing as T
 
 import pandas as pd
 
-from src.lib.preprocessors.interfaces import DataPreprocessorConfig
-
 
 @dataclass(kw_only=True)
 class DataPreprocessorConfig:

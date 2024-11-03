@@ -21,6 +21,6 @@ class LogisticRegressionModel(ModelInterface):
         return self
         
     def predict(self, data: Data) -> Targets:
-        return Targets(list(
-            self._model.predict(self.preprocessor.transform(data.to_pandas())))
+        return Targets(
+            self._model.predict(self.preprocessor.transform(data.to_pandas())).tolist()
         )
