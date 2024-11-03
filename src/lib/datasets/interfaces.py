@@ -1,7 +1,6 @@
 import abc
 from copy import deepcopy
 import typing as T
-
 import pandas as pd
 
 
@@ -45,9 +44,9 @@ class Dataset:
     def to_pandas(self) -> pd.DataFrame:
         return pd.concat([self._data.to_pandas(), self._targets.to_pandas()], axis=1)
 
-    @abc.abstractmethod
     @classmethod
-    def load(cls, *args, **kwargs) -> "Dataset":
+    @abc.abstractmethod
+    def load(cls, *args, split: T.Literal["train", "test"], **kwargs) -> "Dataset":
         """
             Download the dataset from some source, preprocess it and create Dataset
         """
