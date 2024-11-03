@@ -1,11 +1,16 @@
 import abc
+from dataclasses import dataclass
 
-from src.lib.models.config import ModelConfigBase
 from src.lib.datasets.interfaces import Data, Dataset, Targets
 
 
+@dataclass
+class ModelConfigInterface(abc.ABC):
+    ...
+
+
 class ModelInterface(abc.ABC):
-    def __init__(self, name: str, config: ModelConfigBase):
+    def __init__(self, name: str, config: ModelConfigInterface):
         self.name = name
         self.config = config
 
