@@ -28,7 +28,7 @@ class Targets:
 
 
 class Dataset:
-    NAME = None
+    NAME: str | None = None
 
     def __init__(self, data: Data, targets: Targets):
         self._data = data
