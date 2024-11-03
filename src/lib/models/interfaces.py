@@ -59,9 +59,8 @@ class ModelInterface(abc.ABC):
         model.preprocessor = utils.PickleHelper.load(path / "preprocessor.pkl")
         return model._load(path)
     
-    @classmethod
     @abc.abstractmethod
-    def _save(cls, path: Path) -> None:
+    def _save(self, path: Path) -> None:
         ...
 
     @abc.abstractmethod
