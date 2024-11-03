@@ -23,3 +23,11 @@ def train_handler(request: TrainRequest) -> dict:
         "artifact_name": artifact_name,
         "metrics": metrics.model_dump()
     }
+
+def predict_handler(request: PredictRequest) -> dict:
+    model: ModelInterface = storage.load(request.model_artifact_name)
+    data = Data(request.data)
+    predictions = model.predict(data)
+    return {
+        "predictions": predictions.to_list()
+    }
