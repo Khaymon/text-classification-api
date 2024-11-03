@@ -1,7 +1,6 @@
 import pytest
-from src.lib.web.handlers import train_handler
-from src.lib.web.interfaces import TrainRequest
-
+from src.lib.web.handlers import train_handler, predict_handler
+from src.lib.web.interfaces import TrainRequest, PredictRequest
 
 @pytest.fixture
 def train_request():
@@ -33,16 +32,24 @@ def train_request():
         }
     })
 
-def test_train_handler(train_request):
-    """
-    Test the train_handler to ensure it returns the required metrics.
-
-    Args:
-        train_request (TrainRequest): The request object containing dataset and model configurations.
-    """
+@pytest.fixture
+def trained_model_artifact(train_request):
     result = train_handler(train_request)
-    assert "metrics" in result
-    assert "accuracy" in result["metrics"]
-    assert "f1" in result["metrics"]
-    assert "precision" in result["metrics"]
-    assert "recall" in result["metrics"] 
+    return result["artifact_name"]
+
+@pytest.fixture
+def predict_request(trained_model_artifact):
+    return PredictRequest.model_validate({
+        "model_artifact_name": trained_model_artifact,
+        "data": [
+            "Новый текст для проверки",
+            "Еще один текст"
+        ]
+    })
+
+def test_predict_handler(predict_request):
+    result = predict_handler(predict_request)
+    assert "predictions" in result
+    assert isinstance(result["predictions"], list)
+    assert len(result["predictions"]) == 2
+    assert all(isinstance(pred, (int, float)) for pred in result["predictions"]) 
