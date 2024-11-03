@@ -4,12 +4,12 @@ import typing as T
 
 from src.lib.datasets.interfaces import Data, Dataset, Targets
 from src.lib.preprocessors.compose import ComposePreprocessor, ComposePrerpocessorConfig
+from pydantic import BaseModel
 
 
-@dataclass
-class ModelConfig(abc.ABC):
+class ModelConfig(BaseModel):
     preprocessor: ComposePrerpocessorConfig
-    model_config: dict[str, T.Any] | None = None
+    model_configuration: dict[str, T.Any] | None = None
 
 
 class ModelInterface(abc.ABC):

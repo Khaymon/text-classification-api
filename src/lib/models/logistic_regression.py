@@ -7,10 +7,12 @@ from src.lib.datasets.interfaces import Data, Dataset, Targets
 
 
 class LogisticRegressionModel(ModelInterface):
+    NAME = "logistic_regression"
+
     def __init__(self, config: ModelConfig):
         super().__init__(config)
 
-        self._model = LogisticRegression(**(config.model_config or {}))
+        self._model = LogisticRegression(**(config.model_configuration or {}))
 
     def fit(self, train_dataset: Dataset) -> T.Self:
         X = train_dataset.data.to_pandas()
