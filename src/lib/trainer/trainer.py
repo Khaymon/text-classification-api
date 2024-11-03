@@ -1,8 +1,12 @@
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
+import src.common.utils as utils
 from src.lib.models.interfaces import ModelInterface
 from src.lib.datasets.interfaces import Dataset, Data, Targets
 from src.lib.trainer.interfaces import Metrics
+
+
+LOGGER = utils.initialize_logging(__name__)
 
 
 class Trainer:
@@ -12,22 +16,30 @@ class Trainer:
         self.test_dataset = test_dataset
 
     def fit(self) -> Metrics | None:
+        LOGGER.info(f"Fit model {self.model.NAME} with dataset {self.train_dataset.NAME}")
+
         self.model = self.model.fit(self.train_dataset)
         if self.test_dataset:
             predictions = self.model.predict(self.test_dataset.data)
             return self.evaluate(predictions, self.test_dataset.targets)
 
     def predict(self, data: Data | None = None) -> Targets:
-        data = data or self.test_dataset.data
+        data = data or self.test_dataset.data if self.test_dataset is not None else None
+        if data is None:
+            raise ValueError("You should provide data for prediction if there is no test dataset")
+
+        LOGGER.info(f"Predict with model {self.model.NAME}")
+
         return self.model.predict(data)
     
     @staticmethod
     def evaluate(predicted: Targets, true: Targets) -> Metrics:
-        true = true.to_list()
-        predicted = predicted.to_list()
+        true_list = true.to_list()
+        predicted_list = predicted.to_list()
+
         return Metrics(
-            accuracy=accuracy_score(true, predicted),
-            f1=f1_score(true, predicted),
-            precision=precision_score(true, predicted),
-            recall=recall_score(true, predicted),
+            accuracy=float(accuracy_score(true_list, predicted_list)),
+            f1=float(f1_score(true_list, predicted_list)),
+            precision=float(precision_score(true_list, predicted_list)),
+            recall=float(recall_score(true_list, predicted_list)),
         )
