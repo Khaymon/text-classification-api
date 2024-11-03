@@ -8,7 +8,7 @@ from src.lib.datasets.interfaces import Data
 from src.lib.web.interfaces import PredictRequest
 from src.lib.storage.local_artifact_storage import LocalArtifactStorage
 
-storage = LocalArtifactStorage()
+STORAGE = LocalArtifactStorage()
 
 
 def train_handler(request: TrainRequest) -> dict:
@@ -18,14 +18,14 @@ def train_handler(request: TrainRequest) -> dict:
     trainer = Trainer(model, train_dataset, test_dataset)
     model: ModelInterface = trainer.fit()
     metrics = trainer.evaluate()
-    artifact_name = storage.save(model, request.dataset.name)
+    artifact_name = STORAGE.save(model, request.dataset.name)
     return {
         "artifact_name": artifact_name,
         "metrics": metrics.model_dump()
     }
 
 def predict_handler(request: PredictRequest) -> dict:
-    model: ModelInterface = storage.load(request.model_artifact_name)
+    model: ModelInterface = STORAGE.load(request.model_artifact_name)
     data = Data(request.data)
     predictions = model.predict(data)
     return {
