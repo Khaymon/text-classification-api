@@ -28,6 +28,8 @@ class Targets:
 
 
 class Dataset:
+    NAME: str | None = None
+
     def __init__(self, data: Data, targets: Targets):
         self._data = data
         self._targets = targets
