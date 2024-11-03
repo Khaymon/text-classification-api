@@ -38,17 +38,9 @@ class Trainer:
         predictions = self.model.predict(dataset.data)
         return self.compute_metrics(predictions, dataset.targets)
 
-    @staticmethod
-<<<<<<< HEAD
-    def evaluate(predicted: Targets, true: Targets) -> Metrics:
+    def compute_metrics(self, predicted: Targets, true: Targets) -> Metrics:
         true_list = true.to_list()
         predicted_list = predicted.to_list()
-
-=======
-    def compute_metrics(predicted: Targets, true: Targets) -> Metrics:
-        true = true.to_list()
-        predicted = predicted.to_list()
->>>>>>> c27ed94 (evaluate trainer)
         return Metrics(
             accuracy=float(accuracy_score(true_list, predicted_list)),
             f1=float(f1_score(true_list, predicted_list)),

@@ -44,14 +44,6 @@ class ModelInterface(abc.ABC):
 
         self._save(path)
 
-    def load(self, path: Path) -> T.Self:
-        LOGGER.info(f"Load model {type(self).__name__} from {path}")
-
-        self.preprocessor = utils.PickleHelper.load(path / "preprocessor.pkl")
-        self.config = ModelConfig(**utils.JsonHelper.load(path / "config.json"))
-
-        return self._load(path)
-
     @classmethod
     def load(cls, path: Path) -> T.Self:
         config = ModelConfig(**utils.JsonHelper.load(path / "config.json"))
