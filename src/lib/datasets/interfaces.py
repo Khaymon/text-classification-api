@@ -5,7 +5,7 @@ import typing as T
 import pandas as pd
 
 
-class Dataset(abc.ABC):
+class Data(abc.ABC):
     def __init__(self, texts: T.Sequence[str]):
         self._texts = list(texts)
 
@@ -27,18 +27,18 @@ class Targets(abc.ABC):
         return pd.Series(self._targets, name="target")
 
 
-class TrainDataset(abc.ABC):
-    def __init__(self, dataset: Dataset, targets: Targets):
-        self._dataset = dataset
+class Dataset(abc.ABC):
+    def __init__(self, data: Data, targets: Targets):
+        self._data = data
         self._targets = targets
 
     @property
     def data(self):
-        return deepcopy(self._dataset)
+        return deepcopy(self._data)
 
     @property
     def targets(self):
         return deepcopy(self._targets)
 
     def to_pandas(self) -> pd.DataFrame:
-        return pd.concat([self._dataset.to_pandas(), self._targets.to_pandas()], axis=1)
+        return pd.concat([self._data.to_pandas(), self._targets.to_pandas()], axis=1)
