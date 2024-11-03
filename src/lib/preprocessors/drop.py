@@ -6,6 +6,8 @@ from src.lib.preprocessors.interfaces import DataPreprocessorInterface
 
 
 class DropPreprocessor(DataPreprocessorInterface):
+    NAME = "drop"
+
     def __init__(self, columns: T.Iterable[str]):
         self._columns = columns
 

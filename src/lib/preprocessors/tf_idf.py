@@ -7,6 +7,8 @@ from src.lib.preprocessors.interfaces import DataPreprocessorInterface
 
 
 class TfIdfPreprocessor(DataPreprocessorInterface):
+    NAME = "tfidf"
+
     def __init__(self, text_column: str = "text", columns_suffix: str = "_tfidf"):
         self._text_column = text_column
         self._columns_suffix = columns_suffix
