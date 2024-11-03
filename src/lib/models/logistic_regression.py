@@ -34,5 +34,4 @@ class LogisticRegressionModel(ModelInterface):
 
     def _load(self, path: Path) -> T.Self:
         self._model = PickleHelper.load(path / "model.pkl")
-
         return self
