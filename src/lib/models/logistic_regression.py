@@ -2,16 +2,12 @@ import typing as T
 
 from sklearn.linear_model import LogisticRegression
 
-from src.lib.models.interfaces import ModelConfigInterface, ModelInterface
+from src.lib.models.interfaces import ModelConfig, ModelInterface
 from src.lib.datasets.interfaces import Data, Dataset, Targets
 
 
-class LogisticRegressionConfig(ModelConfigInterface):
-    ...
-
-
 class LogisticRegressionModel(ModelInterface):
-    def __init__(self, config: LogisticRegressionConfig):
+    def __init__(self, config: ModelConfig):
         super().__init__(config)
 
         self._model = LogisticRegression(**(config.model_config or {}))
