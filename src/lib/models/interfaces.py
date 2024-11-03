@@ -1,7 +1,9 @@
 import abc
 from dataclasses import dataclass
+from pathlib import Path
 import typing as T
 
+from src.common.utils import PickleHelper
 from src.lib.datasets.interfaces import Data, Dataset, Targets
 from src.lib.preprocessors.compose import ComposePreprocessor, ComposePrerpocessorConfig
 from pydantic import BaseModel
@@ -25,4 +27,22 @@ class ModelInterface(abc.ABC):
 
     @abc.abstractmethod
     def predict(self, data: Data) -> Targets:
+        ...
+
+    def save(self, path: Path) -> None:
+        PickleHelper.save(self.preprocessor, path / "preprocessor.pkl")
+
+        self._save(path)
+
+    def load(self, path: Path) -> T.Self:
+        self.preprocessor = PickleHelper.load(path / "preprocessor.pkl")
+
+        return self._load(path)
+    
+    @abc.abstractmethod
+    def _save(self, path: Path) -> None:
+        ...
+
+    @abc.abstractmethod
+    def _load(self, path: Path) -> T.Self:
         ...
