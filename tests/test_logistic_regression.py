@@ -75,5 +75,4 @@ def test_model_end_to_end(model_config, sample_dataset):
     
     # Predict on training data
     predictions = model.predict(sample_dataset.data)
-
     assert len(predictions.to_list()) == len(sample_dataset.data.to_list()) 
