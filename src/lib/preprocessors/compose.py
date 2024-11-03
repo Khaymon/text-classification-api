@@ -1,5 +1,5 @@
 from copy import deepcopy
-from dataclasses import dataclass
+from pydantic import BaseModel
 import typing as T
 
 import pandas as pd
@@ -9,8 +9,7 @@ from src.lib.preprocessors.interfaces import DataPreprocessorConfig, DataPreproc
 from src.lib.preprocessors.tf_idf import TfIdfPreprocessor
 
 
-@dataclass(kw_only=True)
-class ComposePrerpocessorConfig(DataPreprocessorConfig):
+class ComposePrerpocessorConfig(BaseModel):
     preprocessors: list[DataPreprocessorConfig]
 
 

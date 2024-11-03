@@ -1,8 +1,8 @@
 from pydantic import BaseModel, field_validator
 
 from src.lib.datasets import DATASETS_MAP
-from src.lib.models import MODELS
-
+from src.lib.models import MODELS_MAP
+from src.lib.models.interfaces import ModelConfig
 
 class DatasetOptions(BaseModel):
     name: str
@@ -15,19 +15,17 @@ class DatasetOptions(BaseModel):
 
 class ModelOptions(BaseModel):
     name: str
-    config: dict
+    configuration: ModelConfig
 
     @field_validator('name')
     def validate_model_name(cls, v):
-        if v not in MODELS:
-            raise ValueError(f'Model must be one of {MODELS}')
+        if v not in MODELS_MAP:
+            raise ValueError(f'Model must be one of {MODELS_MAP.keys()}')
         return v
     
-    @field_validator('config')
+    @field_validator('configuration')
     def validate_model_config(cls, v):
         # TODO: validate model config based on the model name
-        if not isinstance(v, dict):
-            raise ValueError('Model config must be a dictionary')
         return v
 
 

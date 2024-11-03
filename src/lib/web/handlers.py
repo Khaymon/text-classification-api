@@ -1,22 +1,17 @@
 from src.lib.web.interfaces import TrainRequest
 from src.lib.datasets import DATASETS_MAP
+from src.lib.models import MODELS_MAP
 from src.lib.trainer import Trainer, Metrics
 from src.lib.datasets.interfaces import Dataset
+from src.lib.models.interfaces import ModelInterface, ModelConfig
 
 
 def train_handler(request: TrainRequest) -> dict:
     train_dataset: Dataset = DATASETS_MAP[request.dataset.name].load(split="train")
     test_dataset: Dataset | None = DATASETS_MAP[request.dataset.name].load(split="test")
-    trainer = Trainer(request.model.name, train_dataset, test_dataset)
+    model: ModelInterface = MODELS_MAP[request.model.name](request.model.configuration)
+    trainer = Trainer(model, train_dataset, test_dataset)
     metrics: Metrics = trainer.fit()
     return {
-        "metrics": {
-            "accuracy": metrics.accuracy,
-            "f1": metrics.f1,
-            "precision": metrics.precision,
-            "recall": metrics.recall,
-        }
+        "metrics": metrics.model_dump()
     }
-
-def predict_handler(request: PredictRequest) -> dict:
-    raise NotImplementedError()

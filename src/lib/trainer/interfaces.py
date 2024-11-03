@@ -1,5 +1,7 @@
+from pydantic import BaseModel
 
-class Metrics:
+
+class Metrics(BaseModel):
     f1: float
     accuracy: float
     precision: float

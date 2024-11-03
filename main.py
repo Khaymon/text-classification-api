@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel, field_validator
 
 from src.lib.datasets import DATASETS_MAP
-from src.lib.models import MODELS
+from src.lib.models import MODELS_MAP
 from src.lib.trainer import Trainer, Metrics
 from src.lib.datasets.interfaces import Dataset
 from src.lib.web.interfaces import TrainRequest, PredictRequest
@@ -30,7 +30,7 @@ async def get_datasets():
 
 @app.get("/models")
 async def get_models():
-    return {"models": MODELS}
+    return {"models": list(MODELS_MAP.keys())}
 
 
 @app.post("/models/train")

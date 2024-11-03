@@ -25,9 +25,9 @@ class Trainer:
     def evaluate(predicted: Targets, true: Targets) -> Metrics:
         true = true.to_list()
         predicted = predicted.to_list()
-        return {
-            "accuracy": accuracy_score(true, predicted),
-            "f1": f1_score(true, predicted),
-            "precision": precision_score(true, predicted),
-            "recall": recall_score(true, predicted),
-        }
+        return Metrics(
+            accuracy=accuracy_score(true, predicted),
+            f1=f1_score(true, predicted),
+            precision=precision_score(true, predicted),
+            recall=recall_score(true, predicted),
+        )

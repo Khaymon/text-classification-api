@@ -1,12 +1,11 @@
 import abc
-from dataclasses import dataclass
+from pydantic import BaseModel
 import typing as T
 
 import pandas as pd
 
 
-@dataclass(kw_only=True)
-class DataPreprocessorConfig:
+class DataPreprocessorConfig(BaseModel):
     name: str
     params: dict[str, T.Any] | None = None
 
