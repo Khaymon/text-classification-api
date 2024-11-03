@@ -1,5 +1,7 @@
+from frozendict import frozendict
+
 from .dvach import DvachDataset
 
-DATASETS_MAP = {
+DATASETS_MAP = frozendict({
     DvachDataset.NAME: DvachDataset,
-}
+})
