@@ -8,7 +8,7 @@ from src.lib.models import MODELS_MAP
 from src.lib.trainer import Trainer, Metrics
 from src.lib.datasets.interfaces import Dataset
 from src.lib.web.interfaces import TrainRequest, PredictRequest
-from src.lib.web.handlers import train_handler, predict_handler
+from src.lib.web.handlers import train_handler, predict_handler, list_model_artifacts_handler
 
 app = FastAPI()
 
@@ -41,6 +41,11 @@ async def train(request: TrainRequest):
 @app.post("/models/predict")
 async def predict(request: PredictRequest):
     return predict_handler(request)
+
+
+@app.get("/models/artifacts")
+async def list_model_artifacts():
+    return list_model_artifacts_handler()
 
 
 if __name__ == "__main__":

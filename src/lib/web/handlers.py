@@ -31,3 +31,6 @@ def predict_handler(request: PredictRequest) -> dict:
     return {
         "predictions": predictions.to_list()
     }
+
+def list_model_artifacts_handler() -> dict:
+    return {"artifacts": list(STORAGE.list())}
