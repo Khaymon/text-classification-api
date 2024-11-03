@@ -6,7 +6,7 @@ from src.lib.trainer.interfaces import Metrics
 
 
 class Trainer:
-    def __init__(self, model: ModelInterface, train_dataset: Dataset, test_dataset: Dataset = None):
+    def __init__(self, model: ModelInterface, train_dataset: Dataset, test_dataset: Dataset | None = None):
         self.model = model
         self.train_dataset = train_dataset
         self.test_dataset = test_dataset
@@ -18,8 +18,7 @@ class Trainer:
             return self.evaluate(predictions, self.test_dataset.targets)
 
     def predict(self, data: Data | None = None) -> Targets:
-        if data is None:
-            data = self.test_dataset.data
+        data = data or self.test_dataset.data
         return self.model.predict(data)
     
     @staticmethod
