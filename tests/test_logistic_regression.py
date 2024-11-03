@@ -44,35 +44,62 @@ def model_config():
     )
 
 def test_model_initialization(model_config):
+    """
+    Test the initialization of the LogisticRegressionModel.
+
+    Args:
+        model_config (ModelConfig): The configuration for the model.
+    """
     model = LogisticRegressionModel(model_config)
     assert model is not None
     assert model.preprocessor is not None
 
 def test_model_fit(model_config, sample_dataset):
+    """
+    Test fitting the LogisticRegressionModel on a sample dataset.
+
+    Args:
+        model_config (ModelConfig): The configuration for the model.
+        sample_dataset (Dataset): The sample dataset for training.
+    """
     model = LogisticRegressionModel(model_config)
     fitted_model = model.fit(sample_dataset)
     assert fitted_model is model  # Should return self
 
 def test_model_predict(model_config, sample_dataset):
+    """
+    Test making predictions with the LogisticRegressionModel.
+
+    Args:
+        model_config (ModelConfig): The configuration for the model.
+        sample_dataset (Dataset): The sample dataset for training.
+    """
     model = LogisticRegressionModel(model_config)
     model.fit(sample_dataset)
-    
+
     test_data = Data([
         "Новый текст для проверки",
         "Еще один текст"
     ])
-    
     predictions = model.predict(test_data)
     assert isinstance(predictions, Targets)
     assert len(predictions.to_list()) == 2
     print(predictions.to_list())
     assert all(isinstance(pred, (int, float)) for pred in predictions.to_list())
 
+
 def test_model_end_to_end(model_config, sample_dataset):
+    """
+    Test the end-to-end pipeline of training and predicting with the LogisticRegressionModel.
+
+    Args:
+        model_config (ModelConfig): The configuration for the model.
+        sample_dataset (Dataset): The sample dataset for training.
+    """
     # Test the entire pipeline from fitting to prediction
     model = LogisticRegressionModel(model_config)
     model.fit(sample_dataset)
-    
+
     # Predict on training data
     predictions = model.predict(sample_dataset.data)
     assert len(predictions.to_list()) == len(sample_dataset.data.to_list()) 

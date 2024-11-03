@@ -21,15 +21,39 @@ class ComposePreprocessor(DataPreprocessorInterface):
     NAME = "compose"
 
     def __init__(self, preprocessors: list[DataPreprocessorInterface]):
+        """
+        Initialize the ComposePreprocessor with a list of preprocessors.
+
+        Args:
+            preprocessors (list[DataPreprocessorInterface]): A list of data preprocessors to apply.
+        """
         self._preprocessors = preprocessors
 
     def fit(self, data: pd.DataFrame | pd.Series) -> T.Self:
+        """
+        Fit all preprocessors on the provided data.
+
+        Args:
+            data (pd.DataFrame | pd.Series): The data to fit the preprocessors on.
+        
+        Returns:
+            Self: The fitted ComposePreprocessor instance.
+        """
         for preprocessor in self._preprocessors:
             preprocessor.fit(data)
 
         return self
 
     def transform(self, data: pd.DataFrame | pd.Series) -> pd.DataFrame | pd.Series:
+        """
+        Transform the data using all preprocessors in sequence.
+
+        Args:
+            data (pd.DataFrame | pd.Series): The data to transform.
+        
+        Returns:
+            pd.DataFrame | pd.Series: The transformed data.
+        """
         result_data = deepcopy(data)
         for preprocessor in self._preprocessors:
             result_data = preprocessor.transform(result_data)
@@ -40,6 +64,15 @@ class ComposePreprocessor(DataPreprocessorInterface):
 
     @classmethod
     def from_config(cls, config: ComposePrerpocessorConfig) -> T.Self:
+        """
+        Create a ComposePreprocessor instance from a configuration.
+
+        Args:
+            config (ComposePrerpocessorConfig): The configuration for the ComposePreprocessor.
+        
+        Returns:
+            Self: A configured ComposePreprocessor instance.
+        """
         preprocessors = []
 
         for preprocessor_config in config.preprocessors:

@@ -12,6 +12,15 @@ STORAGE = LocalArtifactStorage()
 
 
 def train_handler(request: TrainRequest) -> dict:
+    """
+    Handle the training of a new model based on the provided TrainRequest.
+
+    Args:
+        request (TrainRequest): The request containing dataset and model configurations.
+    
+    Returns:
+        dict: A dictionary containing the artifact name and evaluation metrics.
+    """
     train_dataset: Dataset = DATASETS_MAP[request.dataset.name].load(split="train")
     test_dataset: Dataset | None = DATASETS_MAP[request.dataset.name].load(split="test")
     model: ModelInterface = MODELS_MAP[request.model.name](request.model.configuration)
@@ -25,6 +34,15 @@ def train_handler(request: TrainRequest) -> dict:
     }
 
 def predict_handler(request: PredictRequest) -> dict:
+    """
+    Handle prediction requests using a specified model artifact.
+
+    Args:
+        request (PredictRequest): The request containing data and the model artifact name.
+    
+    Returns:
+        dict: A dictionary containing the predictions.
+    """
     model: ModelInterface = STORAGE.load(request.model_artifact_name)
     data = Data(request.data)
     predictions = model.predict(data)
@@ -33,4 +51,10 @@ def predict_handler(request: PredictRequest) -> dict:
     }
 
 def list_model_artifacts_handler() -> dict:
+    """
+    List all available model artifacts stored locally.
+
+    Returns:
+        dict: A dictionary containing a list of artifact names.
+    """
     return {"artifacts": list(STORAGE.list())}

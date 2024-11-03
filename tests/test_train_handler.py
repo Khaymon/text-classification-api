@@ -34,6 +34,12 @@ def train_request():
     })
 
 def test_train_handler(train_request):
+    """
+    Test the train_handler to ensure it returns the required metrics.
+
+    Args:
+        train_request (TrainRequest): The request object containing dataset and model configurations.
+    """
     result = train_handler(train_request)
     assert "metrics" in result
     assert "accuracy" in result["metrics"]

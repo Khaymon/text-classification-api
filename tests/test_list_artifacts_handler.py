@@ -34,6 +34,13 @@ def train_request():
     })
 
 def test_list_artifacts_handler(train_request):
+    """
+    Test the list_artifacts_handler to ensure that a newly trained artifact is listed.
+
+    Args:
+        train_request (TrainRequest): The request object containing dataset and model configurations.
+
+    """
     # Train a new model
     result = train_handler(train_request)
     artifact_name = result["artifact_name"]

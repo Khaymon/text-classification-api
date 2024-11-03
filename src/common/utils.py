@@ -33,6 +33,15 @@ class PickleHelper:
 
 
 def initialize_logging(name: str | None = None) -> logging.Logger:
+    """
+    Initialize and configure the logging system.
+
+    Args:
+        name (str | None, optional): The name of the logger. Defaults to None.
+    
+    Returns:
+        logging.Logger: The configured logger instance.
+    """
     """Initialize logging with reasonable format."""
 
     log = logging.getLogger(name)
