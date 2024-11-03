@@ -17,8 +17,8 @@ class LocalArtifactStorage(ArtifactStorageInterface):
         return parts[1]
 
     def save(self, artifact: ModelInterface, dataset_name: str) -> None:
-        artifact_name = self._get_artifact_name(artifact, dataset_name)
         os.makedirs(ARTIFACTS_DIR, exist_ok=True)
+        artifact_name = self._get_artifact_name(artifact, dataset_name)
         artifact.save(ARTIFACTS_DIR / artifact_name)
         return artifact_name
 
