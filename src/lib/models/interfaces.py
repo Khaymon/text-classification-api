@@ -37,7 +37,7 @@ class ModelInterface(abc.ABC):
 
     def load(self, path: Path) -> T.Self:
         self.preprocessor = PickleHelper.load(path / "preprocessor.pkl")
-        self.config = ModelConfig.from_dict(JsonHelper.load(path / "config.json"))
+        self.config = ModelConfig(**JsonHelper.load(path / "config.json"))
 
         return self._load(path)
     
