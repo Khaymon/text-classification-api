@@ -17,14 +17,14 @@ class DataPreprocessorInterface(abc.ABC):
     NAME: str | None = None
 
     @abc.abstractmethod
-    def fit(self, data: pd.DataFrame) -> T.Self:
+    def fit(self, data: pd.DataFrame | pd.Series) -> T.Self:
         ...
 
     @abc.abstractmethod
-    def transform(self, data: pd.DataFrame) -> pd.DataFrame:
+    def transform(self, data: pd.DataFrame | pd.Series) -> pd.DataFrame | pd.Series:
         ...
 
-    def fit_transform(self, data: pd.DataFrame) -> pd.DataFrame:
+    def fit_transform(self, data: pd.DataFrame | pd.Series) -> pd.DataFrame | pd.Series:
         self.fit(data)
 
         return self.transform(data)

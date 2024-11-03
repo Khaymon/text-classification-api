@@ -3,12 +3,12 @@ from dataclasses import dataclass
 import typing as T
 
 from src.lib.datasets.interfaces import Data, Dataset, Targets
-from src.lib.preprocessors.interfaces import DataPreprocessorInterface
+from src.lib.preprocessors.compose import ComposePreprocessor, ComposePrerpocessorConfig
 
 
 @dataclass
 class ModelConfigInterface(abc.ABC):
-    preprocessor_name: str | None = None
+    preprocessor: ComposePrerpocessorConfig
     model_config: dict[str, T.Any] | None = None
 
 
@@ -17,6 +17,7 @@ class ModelInterface(abc.ABC):
 
     def __init__(self, config: ModelConfigInterface):
         self.config = config
+        self.preprocessor = ComposePreprocessor.from_config(config.preprocessor)
 
     @abc.abstractmethod
     def fit(self, train_dataset: Dataset) -> "ModelInterface":

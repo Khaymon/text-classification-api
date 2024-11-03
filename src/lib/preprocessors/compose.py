@@ -20,13 +20,13 @@ class ComposePreprocessor(DataPreprocessorInterface):
     def __init__(self, preprocessors: list[DataPreprocessorInterface]):
         self._preprocessors = preprocessors
 
-    def fit(self, data: pd.DataFrame) -> T.Self:
+    def fit(self, data: pd.DataFrame | pd.Series) -> T.Self:
         for preprocessor in self._preprocessors:
             preprocessor.fit(data)
 
         return self
 
-    def transform(self, data: pd.DataFrame) -> pd.DataFrame:
+    def transform(self, data: pd.DataFrame | pd.Series) -> pd.DataFrame | pd.Series:
         result_data = deepcopy(data)
         for preprocessor in self._preprocessors:
             result_data = preprocessor.transform(result_data)
