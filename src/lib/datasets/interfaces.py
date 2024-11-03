@@ -12,19 +12,19 @@ class Data:
     def to_list(self) -> T.List[str]:
         return deepcopy(self._texts)
 
-    def to_pandas(self) -> pd.Series:
-        return pd.Series(self._texts, name="text")
+    def to_pandas(self) -> pd.DataFrame:
+        return pd.DataFrame({"text": self._texts})
 
 
 class Targets:
     def __init__(self, targets: T.Sequence[int]):
-        self._targets = targets
+        self._targets = list(targets)
 
-    def to_list(self) -> T.List[str]:
+    def to_list(self) -> T.List[int]:
         return deepcopy(self._targets)
     
-    def to_pandas(self) -> pd.Series:
-        return pd.Series(self._targets, name="target")
+    def to_pandas(self) -> pd.DataFrame:
+        return pd.DataFrame({"target": self._targets})
 
 
 class Dataset:
