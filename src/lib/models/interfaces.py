@@ -30,6 +30,8 @@ class ModelInterface(abc.ABC):
         ...
 
     def save(self, path: Path) -> None:
+        path.mkdir(parents=True, exist_ok=False)
+
         PickleHelper.save(self.preprocessor, path / "preprocessor.pkl")
         JsonHelper.save(asdict(self.config), path / "config.json")
 
