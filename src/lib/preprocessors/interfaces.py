@@ -1,7 +1,16 @@
 import abc
+from dataclasses import dataclass
 import typing as T
 
 import pandas as pd
+
+from src.lib.preprocessors.interfaces import DataPreprocessorConfig
+
+
+@dataclass(kw_only=True)
+class DataPreprocessorConfig:
+    name: str
+    params: dict[str, T.Any] | None = None
 
 
 class DataPreprocessorInterface(abc.ABC):
@@ -19,3 +28,7 @@ class DataPreprocessorInterface(abc.ABC):
         self.fit(data)
 
         return self.transform(data)
+
+    @classmethod
+    def from_config(cls, config: DataPreprocessorConfig) -> T.Self:
+        return cls(**(config.params or {}))
