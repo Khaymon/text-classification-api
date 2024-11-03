@@ -11,12 +11,11 @@ from src.lib.preprocessors.tf_idf import TfIdfPreprocessor
 def sample_dataset():
     data = Data([
         "Верблюдов-то за что? Дебилы, бл...",
-        "Хохлы, это отдушина затюканого россиянина",
         "Собаке - собачья смерть",
         "Страницу обнови, дебил",
         "тебя не убедил 6-страничный пдф"
     ])
-    targets = Targets([1, 1, 1, 1, 0])
+    targets = Targets([1, 1, 1, 0])
     return Dataset(data, targets)
 
 @pytest.fixture
@@ -76,4 +75,5 @@ def test_model_end_to_end(model_config, sample_dataset):
     
     # Predict on training data
     predictions = model.predict(sample_dataset.data)
+
     assert len(predictions.to_list()) == len(sample_dataset.data.to_list()) 
