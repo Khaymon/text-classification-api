@@ -137,3 +137,115 @@ The **Machine Learning Model Management API** is a robust and scalable solution 
 ### Running the Application
 
 Start the FastAPI server using Uvicorn:
+
+```bash
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+
+Access the API documentation at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+### Running Tests
+
+Execute the test suite using pytest:
+
+```bash
+pytest
+```
+
+
+## Code References
+
+- **Training a Model:**
+  
+  The `train_handler` function in `src/lib/web/handlers.py` handles training requests by loading the specified dataset, initializing the model from `MODELS_MAP`, and using the `Trainer` class to fit and evaluate the model.
+  
+  ```python
+  def train_handler(request: TrainRequest) -> dict:
+      train_dataset: Dataset = DATASETS_MAP[request.dataset.name].load(split="train")
+      ...
+      trainer = Trainer(model, train_dataset, test_dataset)
+      model: ModelInterface = trainer.fit()
+      metrics = trainer.evaluate()
+      ...
+  ```
+
+- **Data Preprocessing:**
+  
+  The `ComposePreprocessor` class in `src/lib/preprocessors/compose.py` allows chaining multiple preprocessors like `TfIdfPreprocessor` and `DropPreprocessor`.
+
+  ```python
+  class ComposePreprocessor(DataPreprocessorInterface):
+      def __init__(self, preprocessors: list[DataPreprocessorInterface]):
+          self._preprocessors = preprocessors
+
+      def fit(self, data: pd.DataFrame | pd.Series) -> T.Self:
+          for preprocessor in self._preprocessors:
+              preprocessor.fit(data)
+          return self
+
+      def transform(self, data: pd.DataFrame | pd.Series) -> pd.DataFrame | pd.Series:
+          result_data = deepcopy(data)
+          for preprocessor in self._preprocessors:
+              result_data = preprocessor.transform(result_data)
+          return result_data
+  ```
+
+- **Artifact Storage:**
+  
+  The `LocalArtifactStorage` class in `src/lib/storage/local_artifact_storage.py` manages saving and loading model artifacts locally.
+
+  ```python
+  class LocalArtifactStorage(ArtifactStorageInterface):
+      def save(self, artifact: ModelInterface, dataset_name: str) -> None:
+          artifact_name = self._get_artifact_name(artifact, dataset_name)
+          artifact.save(ARTIFACTS_DIR / artifact_name)
+          return artifact_name
+
+      def load(self, artifact_name: str) -> ModelInterface:
+          model_name = self._get_model_name_from_artifact_name(artifact_name)
+          return MODELS_MAP[model_name].load(ARTIFACTS_DIR / artifact_name)
+  ```
+
+- **API Endpoints:**
+  
+  Defined in `src/main.py`, endpoints like `/models/train`, `/models/predict`, and `/models/artifacts` interact with their respective handlers.
+
+  ```python
+  @app.post("/models/train")
+  async def train(request: TrainRequest):
+      return train_handler(request)
+  ```
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. **Fork the Repository**
+
+2. **Create a New Branch**
+
+   ```bash
+   git checkout -b feature/YourFeature
+   ```
+
+3. **Commit Your Changes**
+
+4. **Push to the Branch**
+
+   ```bash
+   git push origin feature/YourFeature
+   ```
+
+5. **Create a Pull Request**
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+## Acknowledgements
+
+- [FastAPI](https://fastapi.tiangolo.com/) for the web framework.
+- [DVC](https://dvc.org/) for data versioning.
+- [Pydantic](https://pydantic-docs.helpmanual.io/) for data validation.
+- [Scikit-learn](https://scikit-learn.org/) for machine learning tools.
