@@ -28,13 +28,11 @@ class Targets:
 
 
 class Dataset:
+    NAME = None
+
     def __init__(self, data: Data, targets: Targets):
         self._data = data
         self._targets = targets
-
-    @staticmethod
-    def name(self):
-        raise NotImplementedError()
 
     @property
     def data(self):
