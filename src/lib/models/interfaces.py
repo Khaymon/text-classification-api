@@ -10,8 +10,9 @@ class ModelConfigInterface(abc.ABC):
 
 
 class ModelInterface(abc.ABC):
-    def __init__(self, name: str, config: ModelConfigInterface):
-        self.name = name
+    NAME: str | None = None
+
+    def __init__(self, config: ModelConfigInterface):
         self.config = config
 
     @abc.abstractmethod
