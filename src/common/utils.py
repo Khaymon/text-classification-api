@@ -7,7 +7,7 @@ class JsonHelper:
     @staticmethod
     def save(values: dict, path: Path):
         with open(path, "w") as fout:
-            json.dump(values, fout)
+            json.dump(values, fout, indent=4)
 
     @staticmethod
     def load(path: Path) -> dict:
