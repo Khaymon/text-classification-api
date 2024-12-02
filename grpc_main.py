@@ -24,9 +24,41 @@ class TextClassificationService(service_pb2_grpc.TextClassificationServiceServic
         return service_pb2.ModelsResponse(models=models)
 
     def TrainModel(self, request, context):
+        def unpack_message(value):
+            if value.Is(service_pb2.StringValue.DESCRIPTOR):
+                string_value = service_pb2.StringValue()
+                value.Unpack(string_value)
+                return string_value.value
+            elif value.Is(service_pb2.FloatValue.DESCRIPTOR):
+                float_value = service_pb2.FloatValue()
+                value.Unpack(float_value)
+                return float_value.value
+            elif value.Is(service_pb2.StringListValue.DESCRIPTOR):
+                string_list_value = service_pb2.StringListValue()
+                value.Unpack(string_list_value)
+                return list(string_list_value.values)
+            else:
+                raise ValueError(f"Unsupported message type: {value}")
+
         train_request = TrainRequest(
             dataset={"name": request.dataset.name},
-            model={"name": request.model.name, "configuration": request.model.configuration}
+            model={
+                "name": request.model.name,
+                "configuration": {
+                    "preprocessor": {
+                        "preprocessors": [
+                            {
+                                "name": preprocessor.name,
+                                "params": {key: unpack_message(value) for key, value in preprocessor.params.items()}
+                            }
+                            for preprocessor in request.model.configuration.preprocessor.preprocessors
+                        ]
+                    },
+                    "model_configuration": {
+                        key: unpack_message(value) for key, value in request.model.configuration.model_configuration.items()
+                    }
+                }
+            }
         )
         response = train_handler(train_request)
         return service_pb2.TrainResponse(
