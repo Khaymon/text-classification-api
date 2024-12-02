@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/any.proto";
+
 package textclassification;
 
 service TextClassificationService {
@@ -9,6 +11,18 @@ service TextClassificationService {
   rpc TrainModel (TrainRequest) returns (TrainResponse);
   rpc Predict (PredictRequest) returns (PredictResponse);
   rpc ListModelArtifacts (Empty) returns (ListModelArtifactsResponse);
+}
+
+message StringListValue {
+  repeated string values = 1;
+}
+
+message StringValue {
+  string value = 1;
+}
+
+message FloatValue {
+  float value = 1;
 }
 
 message Empty {}
@@ -58,7 +72,17 @@ message ModelOptions {
 }
 
 message ModelConfig {
-  // Define fields for model configuration
+  map<string, string> model_configuration = 1;
+  PreprocessorConfig preprocessor = 2;
+}
+
+message PreprocessorConfig {
+  repeated DataPreprocessorConfig preprocessors = 1;
+}
+
+message DataPreprocessorConfig {
+  string name = 1;
+  map<string, google.protobuf.Any> params = 2;
 }
 
 message Metrics {
