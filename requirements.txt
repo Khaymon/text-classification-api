@@ -2,3 +2,4 @@ uvicorn==0.32.0
 fastapi==0.115.4
 dvc
 dvc-s3
+grpcio-tools==1.68.1
