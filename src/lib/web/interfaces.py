@@ -3,6 +3,8 @@ from pydantic import BaseModel, field_validator
 from src.lib.datasets import DATASETS_MAP
 from src.lib.models import MODELS_MAP
 from src.lib.models.interfaces import ModelConfig
+from src.lib.trainer import Metrics
+
 
 class DatasetOptions(BaseModel):
     name: str
@@ -73,6 +75,12 @@ class TrainRequest(BaseModel):
     dataset: DatasetOptions
     model: ModelOptions
 
+
+class TrainResponse(BaseModel):
+    artifact_name: str
+    metrics: Metrics
+
+
 class PredictRequest(BaseModel):
     """
     Request model for making predictions using a trained model.
@@ -98,3 +106,11 @@ class PredictRequest(BaseModel):
         # TODO: validate model artifact name
         """
         return v
+
+
+class PredictResponse(BaseModel):
+    predictions: list[int]
+
+
+class ListModelArtifactsResponse(BaseModel):
+    artifacts: list[str]
