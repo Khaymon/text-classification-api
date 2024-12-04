@@ -83,7 +83,7 @@ class TrainResponse(BaseModel):
     artifact_name: str
     metrics: Metrics
 
-      
+
 class PredictRequest(BaseModel):
     """
     Request model for making predictions using a trained model.

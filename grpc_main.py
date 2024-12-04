@@ -5,7 +5,11 @@ from google.protobuf import empty_pb2
 import service_pb2
 import service_pb2_grpc
 
-from src.lib.web.handlers import train_handler, predict_handler, list_model_artifacts_handler
+from src.lib.web.handlers import (
+    train_handler,
+    predict_handler,
+    list_model_artifacts_handler,
+)
 from src.lib.web.interfaces import TrainRequest, PredictRequest
 from src.lib.datasets import DATASETS_MAP
 from src.lib.models import MODELS_MAP
@@ -49,16 +53,20 @@ class TextClassificationService(service_pb2_grpc.TextClassificationServiceServic
                         "preprocessors": [
                             {
                                 "name": preprocessor.name,
-                                "params": {key: unpack_message(value) for key, value in preprocessor.params.items()}
+                                "params": {
+                                    key: unpack_message(value)
+                                    for key, value in preprocessor.params.items()
+                                },
                             }
                             for preprocessor in request.model.configuration.preprocessor.preprocessors
                         ]
                     },
                     "model_configuration": {
-                        key: unpack_message(value) for key, value in request.model.configuration.model_configuration.items()
-                    }
-                }
-            }
+                        key: unpack_message(value)
+                        for key, value in request.model.configuration.model_configuration.items()
+                    },
+                },
+            },
         )
         response = train_handler(train_request)
         return service_pb2.TrainResponse(
@@ -67,14 +75,13 @@ class TextClassificationService(service_pb2_grpc.TextClassificationServiceServic
                 f1=response.metrics.f1,
                 accuracy=response.metrics.accuracy,
                 precision=response.metrics.precision,
-                recall=response.metrics.recall
-            )
+                recall=response.metrics.recall,
+            ),
         )
 
     def Predict(self, request, context):
         predict_request = PredictRequest(
-            data=request.data,
-            model_artifact_name=request.model_artifact_name
+            data=request.data, model_artifact_name=request.model_artifact_name
         )
         response = predict_handler(predict_request)
         return service_pb2.PredictResponse(predictions=response.predictions)
@@ -86,11 +93,13 @@ class TextClassificationService(service_pb2_grpc.TextClassificationServiceServic
 
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-    service_pb2_grpc.add_TextClassificationServiceServicer_to_server(TextClassificationService(), server)
-    server.add_insecure_port('[::]:50051')
+    service_pb2_grpc.add_TextClassificationServiceServicer_to_server(
+        TextClassificationService(), server
+    )
+    server.add_insecure_port("[::]:50051")
     server.start()
     server.wait_for_termination()
 
 
-if __name__ == '__main__':
-    serve() 
+if __name__ == "__main__":
+    serve()
