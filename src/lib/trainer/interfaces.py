@@ -11,6 +11,7 @@ class Metrics(BaseModel):
         precision (float): The precision score.
         recall (float): The recall score.
     """
+
     f1: float
     accuracy: float
     precision: float

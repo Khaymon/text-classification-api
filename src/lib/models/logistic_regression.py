@@ -28,7 +28,7 @@ class LogisticRegressionModel(ModelInterface):
 
         Args:
             train_dataset (Dataset): The dataset to train the model on.
-        
+
         Returns:
             Self: The fitted model instance.
         """
@@ -38,14 +38,14 @@ class LogisticRegressionModel(ModelInterface):
         self._model.fit(self.preprocessor.fit_transform(X), y)
 
         return self
-        
+
     def predict(self, data: Data) -> Targets:
         """
         Make predictions using the trained logistic regression model.
 
         Args:
             data (Data): The input data for prediction.
-        
+
         Returns:
             Targets: The prediction results.
         """
@@ -68,7 +68,7 @@ class LogisticRegressionModel(ModelInterface):
 
         Args:
             path (Path): The directory path from which to load the model.
-        
+
         Returns:
             Self: The loaded model instance.
         """

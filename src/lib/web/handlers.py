@@ -17,7 +17,7 @@ def train_handler(request: TrainRequest) -> dict:
 
     Args:
         request (TrainRequest): The request containing dataset and model configurations.
-    
+
     Returns:
         dict: A dictionary containing the artifact name and evaluation metrics.
     """
@@ -28,10 +28,8 @@ def train_handler(request: TrainRequest) -> dict:
     model: ModelInterface = trainer.fit()
     metrics = trainer.evaluate()
     artifact_name = STORAGE.save(model, request.dataset.name)
-    return {
-        "artifact_name": artifact_name,
-        "metrics": metrics.model_dump()
-    }
+    return {"artifact_name": artifact_name, "metrics": metrics.model_dump()}
+
 
 def predict_handler(request: PredictRequest) -> dict:
     """
@@ -39,16 +37,15 @@ def predict_handler(request: PredictRequest) -> dict:
 
     Args:
         request (PredictRequest): The request containing data and the model artifact name.
-    
+
     Returns:
         dict: A dictionary containing the predictions.
     """
     model: ModelInterface = STORAGE.load(request.model_artifact_name)
     data = Data(request.data)
     predictions = model.predict(data)
-    return {
-        "predictions": predictions.to_list()
-    }
+    return {"predictions": predictions.to_list()}
+
 
 def list_model_artifacts_handler() -> dict:
     """

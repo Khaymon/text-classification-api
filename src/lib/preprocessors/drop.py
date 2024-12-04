@@ -13,6 +13,6 @@ class DropPreprocessor(DataPreprocessorInterface):
 
     def fit(self, data: pd.DataFrame) -> T.Self:
         return self
-    
+
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:
         return data.drop(columns=self._columns).copy()

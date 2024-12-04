@@ -6,7 +6,10 @@ import pandas as pd
 
 import src.common.utils as utils
 from src.lib.preprocessors.drop import DropPreprocessor
-from src.lib.preprocessors.interfaces import DataPreprocessorConfig, DataPreprocessorInterface
+from src.lib.preprocessors.interfaces import (
+    DataPreprocessorConfig,
+    DataPreprocessorInterface,
+)
 from src.lib.preprocessors.tf_idf import TfIdfPreprocessor
 
 
@@ -35,7 +38,7 @@ class ComposePreprocessor(DataPreprocessorInterface):
 
         Args:
             data (pd.DataFrame | pd.Series): The data to fit the preprocessors on.
-        
+
         Returns:
             Self: The fitted ComposePreprocessor instance.
         """
@@ -50,7 +53,7 @@ class ComposePreprocessor(DataPreprocessorInterface):
 
         Args:
             data (pd.DataFrame | pd.Series): The data to transform.
-        
+
         Returns:
             pd.DataFrame | pd.Series: The transformed data.
         """
@@ -58,7 +61,9 @@ class ComposePreprocessor(DataPreprocessorInterface):
         for preprocessor in self._preprocessors:
             result_data = preprocessor.transform(result_data)
 
-        LOGGER.info(f"Obtained features {list(result_data.columns)} after preprocessing")
+        LOGGER.info(
+            f"Obtained features {list(result_data.columns)} after preprocessing"
+        )
 
         return result_data
 
@@ -69,7 +74,7 @@ class ComposePreprocessor(DataPreprocessorInterface):
 
         Args:
             config (ComposePrerpocessorConfig): The configuration for the ComposePreprocessor.
-        
+
         Returns:
             Self: A configured ComposePreprocessor instance.
         """

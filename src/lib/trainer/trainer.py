@@ -12,7 +12,12 @@ LOGGER = utils.initialize_logging(__name__)
 
 
 class Trainer:
-    def __init__(self, model: ModelInterface, train_dataset: Dataset, test_dataset: Dataset | None = None):
+    def __init__(
+        self,
+        model: ModelInterface,
+        train_dataset: Dataset,
+        test_dataset: Dataset | None = None,
+    ):
         """
         Initialize the Trainer with a model and datasets.
 
@@ -32,7 +37,9 @@ class Trainer:
         Returns:
             ModelInterface: The fitted model instance.
         """
-        LOGGER.info(f"Fit model {self.model.NAME} with dataset {self.train_dataset.NAME}")
+        LOGGER.info(
+            f"Fit model {self.model.NAME} with dataset {self.train_dataset.NAME}"
+        )
         self.model = self.model.fit(self.train_dataset)
         return self.model
 
@@ -42,25 +49,27 @@ class Trainer:
 
         Args:
             data (Data | None, optional): The data to make predictions on. If None, uses the test dataset. Defaults to None.
-        
+
         Returns:
             Targets: The prediction results.
         """
         data = data or self.test_dataset.data if self.test_dataset is not None else None
         if data is None:
-            raise ValueError("You should provide data for prediction if there is no test dataset")
+            raise ValueError(
+                "You should provide data for prediction if there is no test dataset"
+            )
 
         LOGGER.info(f"Predict with model {self.model.NAME}")
 
         return self.model.predict(data)
-    
+
     def evaluate(self, dataset: Dataset | None = None) -> Metrics | None:
         """
         Evaluate the model's performance on the provided dataset.
 
         Args:
             dataset (Dataset | None, optional): The dataset to evaluate the model on. If None, uses the test dataset. Defaults to None.
-        
+
         Returns:
             Metrics | None: The evaluation metrics.
         """
@@ -77,7 +86,7 @@ class Trainer:
         Args:
             predicted (Targets): The predicted targets.
             true (Targets): The true targets.
-        
+
         Returns:
             Metrics: The computed evaluation metrics.
         """
