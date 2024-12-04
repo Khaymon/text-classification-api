@@ -19,12 +19,14 @@ class TestGRPCService(unittest.TestCase):
     def setUpClass(cls):
         # Set up a gRPC server for testing
         cls.server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
-        service_pb2_grpc.add_TextClassificationServiceServicer_to_server(TextClassificationService(), cls.server)
-        cls.port = cls.server.add_insecure_port('[::]:0')  # Bind to a free port
+        service_pb2_grpc.add_TextClassificationServiceServicer_to_server(
+            TextClassificationService(), cls.server
+        )
+        cls.port = cls.server.add_insecure_port("[::]:0")  # Bind to a free port
         cls.server.start()
 
         # Create a channel and a stub (client) for testing
-        cls.channel = grpc.insecure_channel(f'localhost:{cls.port}')
+        cls.channel = grpc.insecure_channel(f"localhost:{cls.port}")
         cls.stub = service_pb2_grpc.TextClassificationServiceStub(cls.channel)
 
     @classmethod
@@ -49,7 +51,7 @@ class TestGRPCService(unittest.TestCase):
         self.assertIsInstance(list(response.artifacts), list)
 
     def test_train_model(self):
-        string_list = service_pb2.StringListValue(values=['text'])
+        string_list = service_pb2.StringListValue(values=["text"])
         any_message = Any()
         any_message.Pack(string_list)
 
@@ -61,12 +63,14 @@ class TestGRPCService(unittest.TestCase):
                     preprocessor=service_pb2.PreprocessorConfig(
                         preprocessors=[
                             service_pb2.DataPreprocessorConfig(name="tfidf", params={}),
-                            service_pb2.DataPreprocessorConfig(name="drop", params={"columns": any_message})
+                            service_pb2.DataPreprocessorConfig(
+                                name="drop", params={"columns": any_message}
+                            ),
                         ]
                     ),
-                    model_configuration={}
-                )
-            )
+                    model_configuration={},
+                ),
+            ),
         )
         response = self.stub.TrainModel(train_request)
         self.assertIsInstance(response.artifact_name, str)
@@ -74,7 +78,7 @@ class TestGRPCService(unittest.TestCase):
 
     def test_predict(self):
         # Mock request for training
-        string_list = service_pb2.StringListValue(values=['text'])
+        string_list = service_pb2.StringListValue(values=["text"])
         any_message = Any()
         any_message.Pack(string_list)
 
@@ -86,22 +90,24 @@ class TestGRPCService(unittest.TestCase):
                     preprocessor=service_pb2.PreprocessorConfig(
                         preprocessors=[
                             service_pb2.DataPreprocessorConfig(name="tfidf", params={}),
-                            service_pb2.DataPreprocessorConfig(name="drop", params={"columns": any_message})
+                            service_pb2.DataPreprocessorConfig(
+                                name="drop", params={"columns": any_message}
+                            ),
                         ]
                     ),
-                    model_configuration={}
-                )
-            )
+                    model_configuration={},
+                ),
+            ),
         )
         response = self.stub.TrainModel(train_request)
         artifact_name = response.artifact_name
         # Mock request for prediction
         predict_request = service_pb2.PredictRequest(
-            data=["sample text"],
-            model_artifact_name=artifact_name
+            data=["sample text"], model_artifact_name=artifact_name
         )
         response = self.stub.Predict(predict_request)
         self.assertIsInstance(list(response.predictions), list)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

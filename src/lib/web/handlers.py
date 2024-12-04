@@ -4,7 +4,13 @@ from src.lib.trainer import Trainer, Metrics
 from src.lib.datasets.interfaces import Dataset
 from src.lib.models.interfaces import ModelInterface, ModelConfig
 from src.lib.datasets.interfaces import Data
-from src.lib.web.interfaces import PredictRequest, PredictResponse, TrainResponse, TrainRequest, ListModelArtifactsResponse
+from src.lib.web.interfaces import (
+    PredictRequest,
+    PredictResponse,
+    TrainResponse,
+    TrainRequest,
+    ListModelArtifactsResponse,
+)
 from src.lib.storage.local_artifact_storage import LocalArtifactStorage
 
 STORAGE = LocalArtifactStorage()
@@ -32,6 +38,7 @@ def train_handler(request: TrainRequest) -> TrainResponse:
         metrics=metrics,
     )
 
+
 def predict_handler(request: PredictRequest) -> PredictResponse:
     """
     Handle prediction requests using a specified model artifact.
@@ -45,9 +52,8 @@ def predict_handler(request: PredictRequest) -> PredictResponse:
     model: ModelInterface = STORAGE.load(request.model_artifact_name)
     data = Data(request.data)
     predictions = model.predict(data)
-    return PredictResponse(
-        predictions=predictions.to_list()
-    )
+    return PredictResponse(predictions=predictions.to_list())
+
 
 def list_model_artifacts_handler() -> ListModelArtifactsResponse:
     """
@@ -56,6 +62,4 @@ def list_model_artifacts_handler() -> ListModelArtifactsResponse:
     Returns:
         ListModelArtifactsResponse: A response containing a list of artifact names.
     """
-    return ListModelArtifactsResponse(
-        artifacts=list(STORAGE.list())
-    )
+    return ListModelArtifactsResponse(artifacts=list(STORAGE.list()))
