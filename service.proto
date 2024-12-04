@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
+package textclassification;
+
+service TextClassificationService {
+  rpc HealthCheck (Empty) returns (HealthStatus);
+  rpc GetDatasets (Empty) returns (DatasetsResponse);
+  rpc GetModels (Empty) returns (ModelsResponse);
+  rpc TrainModel (TrainRequest) returns (TrainResponse);
+  rpc Predict (PredictRequest) returns (PredictResponse);
+  rpc ListModelArtifacts (Empty) returns (ListModelArtifactsResponse);
+}
+
+message StringListValue {
+  repeated string values = 1;
+}
+
+message StringValue {
+  string value = 1;
+}
+
+message FloatValue {
+  float value = 1;
+}
+
+message Empty {}
+
+message HealthStatus {
+  string status = 1;
+}
+
+message DatasetsResponse {
+  repeated string datasets = 1;
+}
+
+message ModelsResponse {
+  repeated string models = 1;
+}
+
+message TrainRequest {
+  DatasetOptions dataset = 1;
+  ModelOptions model = 2;
+}
+
+message TrainResponse {
+  string artifact_name = 1;
+  Metrics metrics = 2;
+}
+
+message PredictRequest {
+  repeated string data = 1;
+  string model_artifact_name = 2;
+}
+
+message PredictResponse {
+  repeated int32 predictions = 1;
+}
+
+message ListModelArtifactsResponse {
+  repeated string artifacts = 1;
+}
+
+message DatasetOptions {
+  string name = 1;
+}
+
+message ModelOptions {
+  string name = 1;
+  ModelConfig configuration = 2;
+}
+
+message ModelConfig {
+  map<string, string> model_configuration = 1;
+  PreprocessorConfig preprocessor = 2;
+}
+
+message PreprocessorConfig {
+  repeated DataPreprocessorConfig preprocessors = 1;
+}
+
+message DataPreprocessorConfig {
+  string name = 1;
+  map<string, google.protobuf.Any> params = 2;
+}
+
+message Metrics {
+  float f1 = 1;
+  float accuracy = 2;
+  float precision = 3;
+  float recall = 4;
+}
