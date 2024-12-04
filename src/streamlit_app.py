@@ -4,6 +4,7 @@ import requests
 # Set the base URL for the API
 API_BASE_URL = "http://localhost:8000"  # Update this if your API is hosted elsewhere
 
+
 # Function to fetch datasets from the API
 @st.cache
 def get_datasets():
@@ -14,7 +15,8 @@ def get_datasets():
     except requests.exceptions.RequestException as e:
         st.error(f"Error fetching datasets: {e}")
         return []
-    
+
+
 # Function to fetch models from the API
 @st.cache
 def get_models():
@@ -25,6 +27,7 @@ def get_models():
     except requests.exceptions.RequestException as e:
         st.error(f"Error fetching models: {e}")
         return []
+
 
 # Function to fetch model configurations from the API
 @st.cache
@@ -37,6 +40,7 @@ def get_model_configs():
         st.error(f"Error fetching model configurations: {e}")
         return {}
 
+
 # Function to fetch trained models (artifacts) from the API
 @st.cache
 def get_trained_models():
@@ -47,6 +51,7 @@ def get_trained_models():
     except requests.exceptions.RequestException as e:
         st.error(f"Error fetching trained models: {e}")
         return []
+
 
 def train_page():
     st.title("Train Machine Learning Models")
@@ -66,12 +71,20 @@ def train_page():
     params = {}
 
     if model == "logistic_regression":
-        params["C"] = st.number_input("Regularization Strength (C)", min_value=0.01, value=1.0)
-        params["max_iter"] = st.slider("Maximum Iterations", min_value=100, max_value=1000, value=100)
+        params["C"] = st.number_input(
+            "Regularization Strength (C)", min_value=0.01, value=1.0
+        )
+        params["max_iter"] = st.slider(
+            "Maximum Iterations", min_value=100, max_value=1000, value=100
+        )
     elif model == "catboost":
-        params["iterations"] = st.slider("Iterations", min_value=100, max_value=1000, value=500)
+        params["iterations"] = st.slider(
+            "Iterations", min_value=100, max_value=1000, value=500
+        )
         params["depth"] = st.slider("Depth", min_value=3, max_value=10, value=6)
-        params["learning_rate"] = st.number_input("Learning Rate", min_value=0.01, value=0.1)
+        params["learning_rate"] = st.number_input(
+            "Learning Rate", min_value=0.01, value=0.1
+        )
 
     if st.button("Train Model"):
         train_request = {
@@ -81,26 +94,20 @@ def train_page():
                 "configuration": {
                     "preprocessor": {
                         "preprocessors": [
-                            {
-                                "name": "tfidf",
-                                "params": {}
-                            },
-                            {
-                                "name": "drop",
-                                "params": {
-                                    "columns": ["text"]
-                                }
-                            }
+                            {"name": "tfidf", "params": {}},
+                            {"name": "drop", "params": {"columns": ["text"]}},
                         ]
                     },
                     "model_configuration": params,
-                }
-            }
+                },
+            },
         }
 
         try:
             with st.spinner("Training the model..."):
-                response = requests.post(f"{API_BASE_URL}/models/train", json=train_request)
+                response = requests.post(
+                    f"{API_BASE_URL}/models/train", json=train_request
+                )
                 response.raise_for_status()
                 result = response.json()
                 st.success("Model trained successfully!")
@@ -108,6 +115,7 @@ def train_page():
                 st.write("**Metrics:**", result.get("metrics"))
         except requests.exceptions.RequestException as e:
             st.error(f"Error during training: {e}")
+
 
 def predict_page():
     st.title("Predict with Trained Models")
@@ -133,13 +141,16 @@ def predict_page():
 
         try:
             with st.spinner("Making prediction..."):
-                response = requests.post(f"{API_BASE_URL}/models/predict", json=predict_request)
+                response = requests.post(
+                    f"{API_BASE_URL}/models/predict", json=predict_request
+                )
                 response.raise_for_status()
                 result = response.json()
                 st.success("Prediction successful!")
                 st.write("**Prediction:**", result.get("predictions")[0])
         except requests.exceptions.RequestException as e:
             st.error(f"Error during prediction: {e}")
+
 
 def main():
     st.sidebar.title("Navigation")
@@ -150,5 +161,6 @@ def main():
     elif page == "Predict":
         predict_page()
 
+
 if __name__ == "__main__":
-    main() 
+    main()

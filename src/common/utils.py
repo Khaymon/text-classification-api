@@ -4,8 +4,10 @@ from pathlib import Path
 import pickle
 
 
-DEFAULT_LOGGER_HANDLER_NAME = 'default'
-DEFAULT_LOGGER_FORMAT = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s'
+DEFAULT_LOGGER_HANDLER_NAME = "default"
+DEFAULT_LOGGER_FORMAT = (
+    "%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s"
+)
 
 
 class JsonHelper:
@@ -38,7 +40,7 @@ def initialize_logging(name: str | None = None) -> logging.Logger:
 
     Args:
         name (str | None, optional): The name of the logger. Defaults to None.
-    
+
     Returns:
         logging.Logger: The configured logger instance.
     """
