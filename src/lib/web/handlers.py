@@ -16,7 +16,7 @@ def train_handler(request: TrainRequest) -> TrainResponse:
 
     Args:
         request (TrainRequest): The request containing dataset and model configurations.
-    
+
     Returns:
         TrainResponse: A response containing the artifact name and evaluation metrics.
     """
@@ -38,7 +38,7 @@ def predict_handler(request: PredictRequest) -> PredictResponse:
 
     Args:
         request (PredictRequest): The request containing data and the model artifact name.
-    
+
     Returns:
         PredictResponse: A response containing the predictions.
     """

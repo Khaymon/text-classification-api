@@ -8,7 +8,11 @@ from src.lib.models import MODELS_MAP
 from src.lib.trainer import Trainer, Metrics
 from src.lib.datasets.interfaces import Dataset
 from src.lib.web.interfaces import TrainRequest, PredictRequest
-from src.lib.web.handlers import train_handler, predict_handler, list_model_artifacts_handler
+from src.lib.web.handlers import (
+    train_handler,
+    predict_handler,
+    list_model_artifacts_handler,
+)
 
 app = FastAPI()
 
@@ -64,7 +68,7 @@ async def train(request: TrainRequest):
 
     Args:
         request (TrainRequest): The request containing dataset and model configurations.
-    
+
     Returns:
         dict: A dictionary containing the training results.
     """
@@ -78,7 +82,7 @@ async def predict(request: PredictRequest):
 
     Args:
         request (PredictRequest): The request containing data and the model artifact name.
-    
+
     Returns:
         dict: A dictionary containing the predictions.
     """
@@ -98,4 +102,5 @@ async def list_model_artifacts():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

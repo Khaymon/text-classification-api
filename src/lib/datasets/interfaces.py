@@ -51,7 +51,7 @@ class Targets:
             T.List[int]: The list of target integers.
         """
         return deepcopy(self._targets)
-    
+
     def to_pandas(self) -> pd.DataFrame:
         """
         Convert the targets to a pandas DataFrame.
@@ -115,10 +115,10 @@ class Dataset:
             *args: Variable length argument list.
             split (T.Literal["train", "test"]): The dataset split to load.
             **kwargs: Arbitrary keyword arguments.
-        
+
         Returns:
             Dataset: The loaded dataset instance.
-        
+
         Raises:
             NotImplementedError: If the method is not implemented.
         """

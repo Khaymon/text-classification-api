@@ -20,7 +20,7 @@ class DataPreprocessorInterface(abc.ABC):
 
         Args:
             data (pd.DataFrame | pd.Series): The data to fit the preprocessor on.
-        
+
         Returns:
             Self: The fitted preprocessor instance.
         """
@@ -33,7 +33,7 @@ class DataPreprocessorInterface(abc.ABC):
 
         Args:
             data (pd.DataFrame | pd.Series): The data to transform.
-        
+
         Returns:
             pd.DataFrame | pd.Series: The transformed data.
         """
@@ -45,7 +45,7 @@ class DataPreprocessorInterface(abc.ABC):
 
         Args:
             data (pd.DataFrame | pd.Series): The data to fit and transform.
-        
+
         Returns:
             pd.DataFrame | pd.Series: The transformed data.
         """
@@ -60,7 +60,7 @@ class DataPreprocessorInterface(abc.ABC):
 
         Args:
             config (DataPreprocessorConfig): The configuration for the preprocessor.
-        
+
         Returns:
             Self: The configured preprocessor instance.
         """

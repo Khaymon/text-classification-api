@@ -39,7 +39,7 @@ class ModelInterface(abc.ABC):
 
         Args:
             train_dataset (Dataset): The dataset to train the model on.
-        
+
         Returns:
             ModelInterface: The fitted model instance.
         """
@@ -52,7 +52,7 @@ class ModelInterface(abc.ABC):
 
         Args:
             data (Data): The data to make predictions on.
-        
+
         Returns:
             Targets: The prediction results.
         """
@@ -81,7 +81,7 @@ class ModelInterface(abc.ABC):
 
         Args:
             path (Path): The directory path from which to load the model.
-        
+
         Returns:
             Self: The loaded model instance.
         """
@@ -89,7 +89,7 @@ class ModelInterface(abc.ABC):
         model = cls(config)
         model.preprocessor = utils.PickleHelper.load(path / "preprocessor.pkl")
         return model._load(path)
-    
+
     @abc.abstractmethod
     def _save(self, path: Path) -> None:
         """
@@ -107,7 +107,7 @@ class ModelInterface(abc.ABC):
 
         Args:
             path (Path): The directory path from which to load the model specifics.
-        
+
         Returns:
             Self: The loaded model instance.
         """
