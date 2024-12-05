@@ -11,7 +11,7 @@ class DropPreprocessor(DataPreprocessorInterface):
     def __init__(self, columns: T.Iterable[str]):
         self._columns = columns
 
-    def fit(self, data: pd.DataFrame) -> T.Self:
+    def fit(self, data: pd.DataFrame) -> 'DropPreprocessor':
         return self
 
     def transform(self, data: pd.DataFrame) -> pd.DataFrame:

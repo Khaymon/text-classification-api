@@ -14,7 +14,7 @@ class DataPreprocessorInterface(abc.ABC):
     NAME: str | None = None
 
     @abc.abstractmethod
-    def fit(self, data: pd.DataFrame | pd.Series) -> T.Self:
+    def fit(self, data: pd.DataFrame | pd.Series) -> 'DataPreprocessorInterface':
         """
         Fit the preprocessor on the provided data.
 
@@ -54,7 +54,7 @@ class DataPreprocessorInterface(abc.ABC):
         return self.transform(data)
 
     @classmethod
-    def from_config(cls, config: DataPreprocessorConfig) -> T.Self:
+    def from_config(cls, config: DataPreprocessorConfig) -> 'DataPreprocessorInterface':
         """
         Create a preprocessor instance from a configuration.
 

@@ -24,7 +24,7 @@ class LogisticRegressionModel(ModelInterface):
 
         self._model = LogisticRegression(**(config.model_configuration or {}))
 
-    def fit(self, train_dataset: Dataset) -> T.Self:
+    def fit(self, train_dataset: Dataset) -> 'LogisticRegressionModel':
         """
         Fit the logistic regression model on the training dataset.
 
@@ -65,7 +65,7 @@ class LogisticRegressionModel(ModelInterface):
         """
         PickleHelper.save(self._model, path / "model.pkl")
 
-    def _load(self, path: Path) -> T.Self:
+    def _load(self, path: Path) -> 'LogisticRegressionModel':
         """
         Load the logistic regression model from the specified path.
 
