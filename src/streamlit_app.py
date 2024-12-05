@@ -1,10 +1,11 @@
 import streamlit as st
 import requests
-
 import pandas as pd
 
+import os
+
 # Set the base URL for the API
-API_BASE_URL = "http://localhost:8000"  # Update this if your API is hosted elsewhere
+API_BASE_URL = f"http://{os.environ.get('API_HOST', 'localhost')}:{os.environ.get('API_PORT', '8005')}"
 
 
 # Function to fetch datasets from the API
