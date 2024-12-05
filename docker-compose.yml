@@ -9,6 +9,7 @@ services:
       - "8005:8005"
     environment:
       - PROJECT_ROOT=/app
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
     volumes:
       - .:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8005 --reload
@@ -35,3 +36,13 @@ services:
       - API_HOST=fastapi
       - API_PORT=8005
     command: streamlit run src/streamlit_app.py --server.port=8501 --server.address=0.0.0.0
+  
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+
