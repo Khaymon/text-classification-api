@@ -249,3 +249,41 @@ This project is licensed under the [MIT License](LICENSE).
 - [DVC](https://dvc.org/) for data versioning.
 - [Pydantic](https://pydantic-docs.helpmanual.io/) for data validation.
 - [Scikit-learn](https://scikit-learn.org/) for machine learning tools.
+
+## Running with Docker
+
+To run the application using Docker, follow these steps:
+
+1. **Build the Docker Images:**
+
+   Navigate to the root directory of the project and build the Docker images using the following command:
+
+   ```bash
+   docker-compose build
+   ```
+
+2. **Start the Services:**
+
+   Use Docker Compose to start all the services defined in the `docker-compose.yml` file:
+
+   ```bash
+   docker-compose up
+   ```
+
+   This command will start the FastAPI server, gRPC service, Streamlit app, and MLflow server.
+
+3. **Access the Services:**
+
+   - **FastAPI API Documentation:** Access the FastAPI API documentation at [http://localhost:8005/docs](http://localhost:8005/docs).
+   - **Streamlit App:** Access the Streamlit app at [http://localhost:8501](http://localhost:8501).
+   - **MLflow Tracking Server:** Access the MLflow tracking server at [http://localhost:5000](http://localhost:5000).
+
+4. **Stop the Services:**
+
+   To stop the services, press `Ctrl+C` in the terminal where the services are running, or use the following command:
+
+   ```bash
+   docker-compose down
+   ```
+
+   This will stop and remove the containers, but the data in the `mlruns` volume will be preserved.
