@@ -24,9 +24,7 @@ def train_handler(request: data_models.TrainRequest) -> data_models.TrainRespons
         ModelType(request.model.name), request.model.configuration
     ).fit(train_dataset)
 
-    return data_models.TrainResponse(
-        artifact_name=STORAGE.save(model, request.dataset_name)
-    )
+    return data_models.TrainResponse(artifact_name=STORAGE.save(model, request.dataset_name))
 
 
 def predict_handler(request: data_models.PredictRequest) -> data_models.PredictResponse:

@@ -8,7 +8,6 @@ API_BASE_URL = "http://localhost:8000"  # Update this if your API is hosted else
 
 
 # Function to fetch datasets from the API
-@st.cache_data
 def get_datasets():
     try:
         response = requests.get(f"{API_BASE_URL}/datasets")
@@ -20,7 +19,6 @@ def get_datasets():
 
 
 # Function to fetch models from the API
-@st.cache_data
 def get_models():
     try:
         response = requests.get(f"{API_BASE_URL}/models")
@@ -32,7 +30,6 @@ def get_models():
 
 
 # Function to fetch model configurations from the API
-@st.cache_data
 def get_model_configs():
     try:
         response = requests.get(f"{API_BASE_URL}/models/configs")
@@ -44,7 +41,6 @@ def get_model_configs():
 
 
 # Function to fetch trained models (artifacts) from the API
-@st.cache_data
 def get_trained_models():
     try:
         response = requests.get(f"{API_BASE_URL}/models/artifacts")
@@ -112,7 +108,7 @@ def train_page():
 
     if st.button("Train Model"):
         train_request = {
-            "dataset": {"name": dataset},
+            "dataset_name": dataset,
             "model": {
                 "name": model,
                 "configuration": {

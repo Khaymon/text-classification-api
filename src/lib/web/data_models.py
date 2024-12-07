@@ -22,7 +22,7 @@ class ModelOptions(BaseModel):
         Raises:
             ValueError: If the model name is not in MODELS_MAP.
         """
-        if v not in ModelType:
+        if v not in list(ModelType):
             raise ValueError(f"Model must be one of {list(ModelType)}")
         return v
 

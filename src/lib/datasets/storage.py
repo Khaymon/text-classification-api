@@ -30,7 +30,7 @@ class DatasetsStorage:
             raise ValueError(f"Bucket {name} does not exist")
 
         with tempfile.NamedTemporaryFile("r+b") as f:
-            f.write(self.client.get_object(name, "train.csv").read().decode())
+            f.write(self.client.get_object(name, "train.csv").read())
 
             return Dataset.from_csv(f.name)
 
