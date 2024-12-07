@@ -11,7 +11,7 @@ sys.path.append(".")
 import service_pb2
 import service_pb2_grpc
 from grpc_main import TextClassificationService
-from src.lib.web.interfaces import TrainRequest, PredictRequest
+from src.lib.web.data_models import TrainRequest, PredictRequest
 
 
 class TestGRPCService(unittest.TestCase):

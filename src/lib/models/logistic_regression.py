@@ -4,8 +4,10 @@ import typing as T
 from sklearn.linear_model import LogisticRegression
 
 from src.common.utils import PickleHelper
-from src.lib.models.interfaces import ModelConfig, ModelInterface
-from src.lib.datasets.interfaces import Data, Dataset, Targets
+from src.lib.datasets.data_models import Data, Dataset
+
+from .data_models import ModelConfig
+from .interface import ModelInterface
 
 
 class LogisticRegressionModel(ModelInterface):
@@ -32,14 +34,15 @@ class LogisticRegressionModel(ModelInterface):
         Returns:
             Self: The fitted model instance.
         """
-        X = train_dataset.data.to_pandas()
-        y = train_dataset.targets.to_pandas()
+        data = train_dataset.to_pandas()
+        X = data.drop(["target"], axis=1)
+        y = data["target"]
 
         self._model.fit(self.preprocessor.fit_transform(X), y)
 
         return self
 
-    def predict(self, data: Data) -> Targets:
+    def predict(self, data: Data) -> list[int]:
         """
         Make predictions using the trained logistic regression model.
 
@@ -49,9 +52,9 @@ class LogisticRegressionModel(ModelInterface):
         Returns:
             Targets: The prediction results.
         """
-        return Targets(
-            self._model.predict(self.preprocessor.transform(data.to_pandas())).tolist()
-        )
+        return self._model.predict(
+            self.preprocessor.transform(data.to_pandas())
+        ).tolist()
 
     def _save(self, path: Path) -> None:
         """

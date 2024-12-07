@@ -2,7 +2,7 @@ import pytest
 import pandas as pd
 
 from src.lib.models.logistic_regression import LogisticRegressionModel
-from src.lib.models.interfaces import ModelConfig
+from src.lib.models.interface import ModelConfig
 from src.lib.datasets.interfaces import Data, Dataset, Targets
 from src.lib.preprocessors.compose import (
     ComposePrerpocessorConfig,

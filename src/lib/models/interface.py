@@ -1,20 +1,15 @@
 import abc
-from dataclasses import asdict
 from pathlib import Path
 import typing as T
 
 import src.common.utils as utils
-from src.lib.datasets.interfaces import Data, Dataset, Targets
-from src.lib.preprocessors.compose import ComposePreprocessor, ComposePrerpocessorConfig
-from pydantic import BaseModel
+from src.lib.datasets.data_models import Data, Dataset
+from src.lib.preprocessors.compose import ComposePreprocessor
+
+from .data_models import ModelConfig
 
 
 LOGGER = utils.initialize_logging(__name__)
-
-
-class ModelConfig(BaseModel):
-    preprocessor: ComposePrerpocessorConfig
-    model_configuration: dict[str, T.Any] | None = None
 
 
 class ModelInterface(abc.ABC):
@@ -46,7 +41,7 @@ class ModelInterface(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def predict(self, data: Data) -> Targets:
+    def predict(self, data: Data) -> list[int]:
         """
         Make predictions on the provided data.
 

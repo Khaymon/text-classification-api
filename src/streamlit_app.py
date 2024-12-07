@@ -1,12 +1,14 @@
 import streamlit as st
 import requests
 
+import pandas as pd
+
 # Set the base URL for the API
 API_BASE_URL = "http://localhost:8000"  # Update this if your API is hosted elsewhere
 
 
 # Function to fetch datasets from the API
-@st.cache
+@st.cache_data
 def get_datasets():
     try:
         response = requests.get(f"{API_BASE_URL}/datasets")
@@ -18,7 +20,7 @@ def get_datasets():
 
 
 # Function to fetch models from the API
-@st.cache
+@st.cache_data
 def get_models():
     try:
         response = requests.get(f"{API_BASE_URL}/models")
@@ -30,7 +32,7 @@ def get_models():
 
 
 # Function to fetch model configurations from the API
-@st.cache
+@st.cache_data
 def get_model_configs():
     try:
         response = requests.get(f"{API_BASE_URL}/models/configs")
@@ -42,7 +44,7 @@ def get_model_configs():
 
 
 # Function to fetch trained models (artifacts) from the API
-@st.cache
+@st.cache_data
 def get_trained_models():
     try:
         response = requests.get(f"{API_BASE_URL}/models/artifacts")
@@ -51,6 +53,28 @@ def get_trained_models():
     except requests.exceptions.RequestException as e:
         st.error(f"Error fetching trained models: {e}")
         return []
+
+
+def upload_dataset_page():
+    st.title("Upload dataset")
+    dataset_name = st.text_area("Dataset name")
+    dataset_path = st.text_area(".csv file path with train data")
+
+    if st.button("Upload dataset"):
+        dataset = pd.read_csv(dataset_path)
+        data = [(row.text, row.target) for _, row in dataset.iterrows()]
+        upload_dataset_request = {"name": dataset_name, "data": data}
+
+        try:
+            with st.spinner("Uploading the dataset..."):
+                response = requests.post(
+                    f"{API_BASE_URL}/datasets/upload", json=upload_dataset_request
+                )
+                response.raise_for_status()
+                result = response.json()
+                st.write("**Message:**", result.get("message"))
+        except requests.exceptions.RequestException as e:
+            st.error(f"Error during training: {e}")
 
 
 def train_page():
@@ -154,12 +178,14 @@ def predict_page():
 
 def main():
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Go to", ["Train", "Predict"])
+    page = st.sidebar.radio("Go to", ["Train", "Predict", "Datasets"])
 
     if page == "Train":
         train_page()
     elif page == "Predict":
         predict_page()
+    elif page == "Datasets":
+        upload_dataset_page()
 
 
 if __name__ == "__main__":

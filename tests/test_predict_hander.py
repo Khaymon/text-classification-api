@@ -1,6 +1,6 @@
 import pytest
 from src.lib.web.handlers import train_handler, predict_handler
-from src.lib.web.interfaces import TrainRequest, PredictRequest
+from src.lib.web.data_models import TrainRequest, PredictRequest
 
 
 @pytest.fixture

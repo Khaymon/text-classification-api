@@ -1,6 +1,5 @@
 from concurrent import futures
 import grpc
-from google.protobuf import empty_pb2
 
 import service_pb2
 import service_pb2_grpc
@@ -10,8 +9,8 @@ from src.lib.web.handlers import (
     predict_handler,
     list_model_artifacts_handler,
 )
-from src.lib.web.interfaces import TrainRequest, PredictRequest
-from src.lib.datasets import DATASETS_MAP
+from src.lib.web.data_models import TrainRequest, PredictRequest
+from src.lib.datasets.storage import DatasetsStorage
 from src.lib.models import MODELS_MAP
 
 
@@ -20,7 +19,7 @@ class TextClassificationService(service_pb2_grpc.TextClassificationServiceServic
         return service_pb2.HealthStatus(status="healthy")
 
     def GetDatasets(self, request, context):
-        datasets = list(DATASETS_MAP.keys())
+        datasets = DatasetsStorage().list()
         return service_pb2.DatasetsResponse(datasets=datasets)
 
     def GetModels(self, request, context):
@@ -45,7 +44,7 @@ class TextClassificationService(service_pb2_grpc.TextClassificationServiceServic
                 raise ValueError(f"Unsupported message type: {value}")
 
         train_request = TrainRequest(
-            dataset={"name": request.dataset.name},
+            dataset={"name": request.dataset_name},
             model={
                 "name": request.model.name,
                 "configuration": {
