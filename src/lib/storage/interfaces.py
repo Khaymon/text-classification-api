@@ -1,4 +1,4 @@
-from src.lib.models.interfaces import ModelInterface
+from src.lib.models.interface import ModelInterface
 
 
 class ArtifactStorageInterface:

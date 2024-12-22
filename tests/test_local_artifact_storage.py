@@ -5,7 +5,7 @@ from shutil import rmtree
 
 from src.lib.storage.local_artifact_storage import LocalArtifactStorage
 from src.lib.models.logistic_regression import LogisticRegressionModel
-from src.lib.models.interfaces import ModelConfig, ModelInterface
+from src.lib.models.interface import ModelConfig, ModelInterface
 from src.common.const import ARTIFACTS_DIR
 from src.lib.preprocessors.compose import (
     ComposePrerpocessorConfig,

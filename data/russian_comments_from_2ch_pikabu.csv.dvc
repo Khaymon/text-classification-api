@@ -1,0 +1,5 @@
+outs:
+- md5: cc07ca8aba3ba5a2f9f0721845ad9084
+  size: 7529117
+  hash: md5
+  path: russian_comments_from_2ch_pikabu.csv

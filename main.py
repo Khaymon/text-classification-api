@@ -1,18 +1,9 @@
-from typing import Literal
-
 from fastapi import FastAPI
-from pydantic import BaseModel, field_validator
 
-from src.lib.datasets import DATASETS_MAP
-from src.lib.models import MODELS_MAP
-from src.lib.trainer import Trainer, Metrics
-from src.lib.datasets.interfaces import Dataset
-from src.lib.web.interfaces import TrainRequest, PredictRequest
-from src.lib.web.handlers import (
-    train_handler,
-    predict_handler,
-    list_model_artifacts_handler,
-)
+from src.lib.datasets.storage import DatasetsStorage
+from src.lib.models import ModelType
+import src.lib.web.data_models as data_models
+import src.lib.web.handlers as handlers
 
 app = FastAPI()
 
@@ -47,7 +38,20 @@ async def get_datasets():
     Returns:
         dict: A dictionary containing the list of dataset names.
     """
-    return {"datasets": list(DATASETS_MAP.keys())}
+    return {"datasets": DatasetsStorage().list()}
+
+
+@app.post("/datasets/upload")
+async def upload_dataset(request: data_models.UploadDatasetRequest):
+    """
+    Retrieve a list of available datasets.
+
+    Returns:
+        dict: A dictionary containing the list of dataset names.
+    """
+
+    return handlers.upload_dataset_handler(request)
+
 
 
 @app.get("/models")
@@ -58,11 +62,11 @@ async def get_models():
     Returns:
         dict: A dictionary containing the list of model names.
     """
-    return {"models": list(MODELS_MAP.keys())}
+    return {"models": list(ModelType)}
 
 
 @app.post("/models/train")
-async def train(request: TrainRequest):
+async def train(request: data_models.TrainRequest):
     """
     Endpoint to train a new model based on the provided TrainRequest.
 
@@ -72,11 +76,11 @@ async def train(request: TrainRequest):
     Returns:
         dict: A dictionary containing the training results.
     """
-    return train_handler(request)
+    return handlers.train_handler(request)
 
 
 @app.post("/models/predict")
-async def predict(request: PredictRequest):
+async def predict(request: data_models.PredictRequest):
     """
     Endpoint to make predictions using a specified model artifact.
 
@@ -86,7 +90,7 @@ async def predict(request: PredictRequest):
     Returns:
         dict: A dictionary containing the predictions.
     """
-    return predict_handler(request)
+    return handlers.predict_handler(request)
 
 
 @app.get("/models/artifacts")
@@ -97,7 +101,7 @@ async def list_model_artifacts():
     Returns:
         dict: A dictionary containing a list of artifact names.
     """
-    return list_model_artifacts_handler()
+    return handlers.list_model_artifacts_handler()
 
 
 if __name__ == "__main__":

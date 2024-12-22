@@ -1,6 +1,6 @@
 [core]
-    remote = s3remote
+    remote = minioremote
     autostage = true
-['remote "s3remote"']
-    url = s3://text-classification-api
-    endpointurl = https://s3.ru-1.storage.selcloud.ru
+['remote "minioremote"']
+    url = s3://text-classification-bucket
+    endpointurl = http://localhost:9000

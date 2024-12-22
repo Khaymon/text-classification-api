@@ -1,7 +1,7 @@
 import pytest
 from src.lib.web.handlers import train_handler
 from src.lib.storage.local_artifact_storage import LocalArtifactStorage
-from src.lib.web.interfaces import TrainRequest
+from src.lib.web.data_models import TrainRequest
 
 
 @pytest.fixture

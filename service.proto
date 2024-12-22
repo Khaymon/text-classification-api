@@ -40,7 +40,7 @@ message ModelsResponse {
 }
 
 message TrainRequest {
-  DatasetOptions dataset = 1;
+  string dataset_name = 1;
   ModelOptions model = 2;
 }
 
@@ -60,10 +60,6 @@ message PredictResponse {
 
 message ListModelArtifactsResponse {
   repeated string artifacts = 1;
-}
-
-message DatasetOptions {
-  string name = 1;
 }
 
 message ModelOptions {

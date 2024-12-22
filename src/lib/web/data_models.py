@@ -1,31 +1,7 @@
+from pathlib import Path
 from pydantic import BaseModel, field_validator
 
-from src.lib.datasets import DATASETS_MAP
-from src.lib.models import MODELS_MAP
-from src.lib.models.interfaces import ModelConfig
-from src.lib.trainer import Metrics
-
-
-class DatasetOptions(BaseModel):
-    name: str
-
-    @field_validator("name")
-    def validate_dataset_name(cls, v):
-        """
-        Validate that the dataset name exists in DATASETS_MAP.
-
-        Args:
-            v (str): The name of the dataset.
-
-        Returns:
-            str: The validated dataset name.
-
-        Raises:
-            ValueError: If the dataset name is not in DATASETS_MAP.
-        """
-        if v not in DATASETS_MAP:
-            raise ValueError(f"Dataset must be one of {DATASETS_MAP.keys()}")
-        return v
+from src.lib.models import ModelConfig, ModelType
 
 
 class ModelOptions(BaseModel):
@@ -46,8 +22,8 @@ class ModelOptions(BaseModel):
         Raises:
             ValueError: If the model name is not in MODELS_MAP.
         """
-        if v not in MODELS_MAP:
-            raise ValueError(f"Model must be one of {MODELS_MAP.keys()}")
+        if v not in list(ModelType):
+            raise ValueError(f"Model must be one of {list(ModelType)}")
         return v
 
     @field_validator("configuration")
@@ -71,17 +47,16 @@ class TrainRequest(BaseModel):
     Request model for training a new machine learning model.
 
     Attributes:
-        dataset (DatasetOptions): The dataset configuration.
+        dataset_name (str): The dataset name.
         model (ModelOptions): The model configuration.
     """
 
-    dataset: DatasetOptions
+    dataset_name: str
     model: ModelOptions
 
 
 class TrainResponse(BaseModel):
     artifact_name: str
-    metrics: Metrics
 
 
 class PredictRequest(BaseModel):
@@ -118,3 +93,12 @@ class PredictResponse(BaseModel):
 
 class ListModelArtifactsResponse(BaseModel):
     artifacts: list[str]
+
+
+class UploadDatasetRequest(BaseModel):
+    name: str
+    data: list[tuple[str, int | float]]
+
+
+class UploadDatasetResponse(BaseModel):
+    message: str

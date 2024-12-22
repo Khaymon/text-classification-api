@@ -1,22 +1,13 @@
-from src.lib.datasets import DATASETS_MAP
-from src.lib.models import MODELS_MAP
-from src.lib.trainer import Trainer, Metrics
-from src.lib.datasets.interfaces import Dataset
-from src.lib.models.interfaces import ModelInterface, ModelConfig
-from src.lib.datasets.interfaces import Data
-from src.lib.web.interfaces import (
-    PredictRequest,
-    PredictResponse,
-    TrainResponse,
-    TrainRequest,
-    ListModelArtifactsResponse,
-)
+from src.lib.models import ModelsFactory, ModelInterface, ModelType
+from src.lib.datasets.data_models import Data, Dataset
+from src.lib.datasets.storage import DatasetsStorage
+import src.lib.web.data_models as data_models
 from src.lib.storage.local_artifact_storage import LocalArtifactStorage
 
 STORAGE = LocalArtifactStorage()
 
 
-def train_handler(request: TrainRequest) -> TrainResponse:
+def train_handler(request: data_models.TrainRequest) -> data_models.TrainResponse:
     """
     Handle the training of a new model based on the provided TrainRequest.
 
@@ -26,20 +17,17 @@ def train_handler(request: TrainRequest) -> TrainResponse:
     Returns:
         TrainResponse: A response containing the artifact name and evaluation metrics.
     """
-    train_dataset: Dataset = DATASETS_MAP[request.dataset.name].load(split="train")
-    test_dataset: Dataset | None = DATASETS_MAP[request.dataset.name].load(split="test")
-    model: ModelInterface = MODELS_MAP[request.model.name](request.model.configuration)
-    trainer = Trainer(model, train_dataset, test_dataset)
-    model: ModelInterface = trainer.fit()
-    metrics = trainer.evaluate()
-    artifact_name = STORAGE.save(model, request.dataset.name)
-    return TrainResponse(
-        artifact_name=artifact_name,
-        metrics=metrics,
-    )
+    datasets_storage = DatasetsStorage()
+
+    train_dataset = datasets_storage.download(request.dataset_name)
+    model = ModelsFactory.create(
+        ModelType(request.model.name), request.model.configuration
+    ).fit(train_dataset)
+
+    return data_models.TrainResponse(artifact_name=STORAGE.save(model, request.dataset_name))
 
 
-def predict_handler(request: PredictRequest) -> PredictResponse:
+def predict_handler(request: data_models.PredictRequest) -> data_models.PredictResponse:
     """
     Handle prediction requests using a specified model artifact.
 
@@ -50,16 +38,28 @@ def predict_handler(request: PredictRequest) -> PredictResponse:
         PredictResponse: A response containing the predictions.
     """
     model: ModelInterface = STORAGE.load(request.model_artifact_name)
-    data = Data(request.data)
-    predictions = model.predict(data)
-    return PredictResponse(predictions=predictions.to_list())
+    predictions = model.predict(Data(texts=request.data))
+
+    return data_models.PredictResponse(predictions=predictions)
 
 
-def list_model_artifacts_handler() -> ListModelArtifactsResponse:
+def list_model_artifacts_handler() -> data_models.ListModelArtifactsResponse:
     """
     List all available model artifacts stored locally.
 
     Returns:
         ListModelArtifactsResponse: A response containing a list of artifact names.
     """
-    return ListModelArtifactsResponse(artifacts=list(STORAGE.list()))
+    return data_models.ListModelArtifactsResponse(artifacts=list(STORAGE.list()))
+
+
+def upload_dataset_handler(
+    request: data_models.UploadDatasetRequest,
+) -> data_models.UploadDatasetResponse:
+    dataset = Dataset(
+        texts=[text for text, _ in request.data],
+        targets=[int(target) for _, target in request.data],
+    )
+    DatasetsStorage().upload(dataset=dataset, name=request.name)
+
+    return data_models.UploadDatasetResponse(message="success")
