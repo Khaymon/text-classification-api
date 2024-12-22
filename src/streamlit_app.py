@@ -55,23 +55,24 @@ def get_trained_models():
 def upload_dataset_page():
     st.title("Upload dataset")
     dataset_name = st.text_area("Dataset name")
-    dataset_path = st.text_area(".csv file path with train data")
+    uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 
-    if st.button("Upload dataset"):
-        dataset = pd.read_csv(dataset_path)
+    if uploaded_file is not None:
+        dataset = pd.read_csv(uploaded_file)
         data = [(row.text, row.target) for _, row in dataset.iterrows()]
         upload_dataset_request = {"name": dataset_name, "data": data}
 
-        try:
-            with st.spinner("Uploading the dataset..."):
-                response = requests.post(
-                    f"{API_BASE_URL}/datasets/upload", json=upload_dataset_request
-                )
-                response.raise_for_status()
-                result = response.json()
-                st.write("**Message:**", result.get("message"))
-        except requests.exceptions.RequestException as e:
-            st.error(f"Error during training: {e}")
+        if st.button("Upload dataset"):
+            try:
+                with st.spinner("Uploading the dataset..."):
+                    response = requests.post(
+                        f"{API_BASE_URL}/datasets/upload", json=upload_dataset_request
+                    )
+                    response.raise_for_status()
+                    result = response.json()
+                    st.write("**Message:**", result.get("message"))
+            except requests.exceptions.RequestException as e:
+                st.error(f"Error during training: {e}")
 
 
 def train_page():
