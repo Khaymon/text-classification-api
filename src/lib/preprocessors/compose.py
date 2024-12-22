@@ -61,10 +61,6 @@ class ComposePreprocessor(DataPreprocessorInterface):
         for preprocessor in self._preprocessors:
             result_data = preprocessor.transform(result_data)
 
-        LOGGER.info(
-            f"Obtained features {list(result_data.columns)} after preprocessing"
-        )
-
         return result_data
 
     @classmethod
