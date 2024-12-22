@@ -1,0 +1,107 @@
+from pathlib import Path
+from typing import Optional
+
+from pydantic import BaseModel, field_validator
+
+from src.lib.models import ModelConfig, ModelType
+
+
+class ModelOptions(BaseModel):
+    name: str
+    configuration: ModelConfig
+
+    @field_validator("name")
+    def validate_model_name(cls, v):
+        """
+        Validate that the model name exists in MODELS_MAP.
+
+        Args:
+            v (str): The name of the model.
+
+        Returns:
+            str: The validated model name.
+
+        Raises:
+            ValueError: If the model name is not in MODELS_MAP.
+        """
+        if v not in list(ModelType):
+            raise ValueError(f"Model must be one of {list(ModelType)}")
+        return v
+
+    @field_validator("configuration")
+    def validate_model_config(cls, v):
+        """
+        Validate the model configuration based on the model name.
+
+        Args:
+            v (ModelConfig): The configuration of the model.
+
+        Returns:
+            ModelConfig: The validated model configuration.
+
+        # TODO: validate model config based on the model name
+        """
+        return v
+
+
+class TrainRequest(BaseModel):
+    """
+    Request model for training a new machine learning model.
+
+    Attributes:
+        dataset_name (str): The dataset name.
+        model (ModelOptions): The model configuration.
+    """
+
+    dataset_name: str
+    model: ModelOptions
+
+
+class TrainResponse(BaseModel):
+    artifact_name: str
+    metrics: Optional[dict[str, float]]
+
+
+class PredictRequest(BaseModel):
+    """
+    Request model for making predictions using a trained model.
+
+    Attributes:
+        data (list[str]): The input data for prediction.
+        model_artifact_name (str): The name of the model artifact to use for prediction.
+    """
+
+    data: list[str]
+    model_artifact_name: str
+
+    @field_validator("model_artifact_name")
+    def validate_model_artifact_name(cls, v):
+        """
+        Validate the model artifact name.
+
+        Args:
+            v (str): The name of the model artifact.
+
+        Returns:
+            str: The validated model artifact name.
+
+        # TODO: validate model artifact name
+        """
+        return v
+
+
+class PredictResponse(BaseModel):
+    predictions: list[int]
+
+
+class ListModelArtifactsResponse(BaseModel):
+    artifacts: list[str]
+
+
+class UploadDatasetRequest(BaseModel):
+    name: str
+    data: list[tuple[str, int | float]]
+
+
+class UploadDatasetResponse(BaseModel):
+    message: str

@@ -1,0 +1,6 @@
+[core]
+    remote = minioremote
+    autostage = true
+['remote "minioremote"']
+    url = s3://text-classification-bucket
+    endpointurl = http://${MINIO_HOST}:${MINIO_PORT}

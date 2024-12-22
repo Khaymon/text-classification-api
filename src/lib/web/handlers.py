@@ -1,0 +1,85 @@
+import mlflow
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
+from src.lib.models import ModelsFactory, ModelInterface, ModelType
+from src.lib.datasets.data_models import Data, Dataset
+from src.lib.datasets.storage import DatasetsStorage
+import src.lib.web.data_models as data_models
+from src.lib.storage.local_artifact_storage import LocalArtifactStorage
+
+STORAGE = LocalArtifactStorage()
+
+
+def train_handler(request: data_models.TrainRequest) -> data_models.TrainResponse:
+    """
+    Handle the training of a new model based on the provided TrainRequest.
+
+    Args:
+        request (TrainRequest): The request containing dataset and model configurations.
+
+    Returns:
+        TrainResponse: A response containing the artifact name and evaluation metrics.
+    """
+    datasets_storage = DatasetsStorage()
+
+    train_dataset = datasets_storage.download(request.dataset_name)
+    model = ModelsFactory.create(
+        ModelType(request.model.name), request.model.configuration
+    )
+    mlflow.set_experiment(experiment_name=request.dataset_name)
+    with mlflow.start_run(
+        run_name=model.NAME
+    ):
+        mlflow.log_params(model.config.model_dump())
+        model = model.fit(train_dataset)
+        predictions = model.predict(train_dataset)
+        metrics = {
+            "accuracy": accuracy_score(train_dataset.targets, predictions),
+            "f1_score": f1_score(train_dataset.targets, predictions),
+            "precision": precision_score(train_dataset.targets, predictions),
+            "recall": recall_score(train_dataset.targets, predictions),
+        }
+        mlflow.log_metrics(metrics)
+
+    return data_models.TrainResponse(
+        artifact_name=STORAGE.save(model, request.dataset_name),
+        metrics=metrics,
+    )
+
+
+def predict_handler(request: data_models.PredictRequest) -> data_models.PredictResponse:
+    """
+    Handle prediction requests using a specified model artifact.
+
+    Args:
+        request (PredictRequest): The request containing data and the model artifact name.
+
+    Returns:
+        PredictResponse: A response containing the predictions.
+    """
+    model: ModelInterface = STORAGE.load(request.model_artifact_name)
+    predictions = model.predict(Data(texts=request.data))
+
+    return data_models.PredictResponse(predictions=predictions)
+
+
+def list_model_artifacts_handler() -> data_models.ListModelArtifactsResponse:
+    """
+    List all available model artifacts stored locally.
+
+    Returns:
+        ListModelArtifactsResponse: A response containing a list of artifact names.
+    """
+    return data_models.ListModelArtifactsResponse(artifacts=list(STORAGE.list()))
+
+
+def upload_dataset_handler(
+    request: data_models.UploadDatasetRequest,
+) -> data_models.UploadDatasetResponse:
+    dataset = Dataset(
+        texts=[text for text, _ in request.data],
+        targets=[int(target) for _, target in request.data],
+    )
+    DatasetsStorage().upload(dataset=dataset, name=request.name)
+
+    return data_models.UploadDatasetResponse(message="success")
