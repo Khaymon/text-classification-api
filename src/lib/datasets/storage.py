@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 import minio
@@ -11,9 +12,12 @@ logger = utils.initialize_logging(__name__)
 
 
 class DatasetsStorage:
-    ENDPOINT = "localhost:9000"
+    ENDPOINT = f"{os.environ.get('MINIO_HOST', 'localhost')}:{os.environ.get('MINIO_PORT', '9000')}"
     client = minio.Minio(
-        ENDPOINT, access_key="minioadmin", secret_key="minioadmin", secure=False
+        ENDPOINT,
+        access_key=os.environ.get("MINIO_ACCESS_KEY", "minioadmin"),
+        secret_key=os.environ.get("MINIO_SECRET_KEY", "minioadmin"),
+        secure=False,
     )
 
     def upload(self, dataset: Dataset, name: str):
