@@ -41,7 +41,10 @@ def train_handler(request: data_models.TrainRequest) -> data_models.TrainRespons
         }
         mlflow.log_metrics(metrics)
 
-    return data_models.TrainResponse(artifact_name=STORAGE.save(model, request.dataset_name))
+    return data_models.TrainResponse(
+        artifact_name=STORAGE.save(model, request.dataset_name),
+        metrics=metrics,
+    )
 
 
 def predict_handler(request: data_models.PredictRequest) -> data_models.PredictResponse:

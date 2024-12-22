@@ -133,8 +133,8 @@ def train_page():
                 response.raise_for_status()
                 result = response.json()
                 st.success("Model trained successfully!")
-                st.write("**Model Name:**", result.get("model_name"))
-                st.write("**Metrics:**", result.get("metrics"))
+                st.write("**Model Name:**", result.get("artifact_name", None))
+                st.write("**Metrics:**", result.get("metrics", None))
         except requests.exceptions.RequestException as e:
             st.error(f"Error during training: {e}")
 
