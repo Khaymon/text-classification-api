@@ -26,8 +26,9 @@ def train_handler(request: data_models.TrainRequest) -> data_models.TrainRespons
     model = ModelsFactory.create(
         ModelType(request.model.name), request.model.configuration
     )
+    mlflow.set_experiment(experiment_name=request.dataset_name)
     with mlflow.start_run(
-        run_name=f"{model.NAME}__{request.dataset_name}"
+        run_name=model.NAME
     ):
         mlflow.log_params(model.config.model_dump())
         model = model.fit(train_dataset)
