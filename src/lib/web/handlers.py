@@ -27,7 +27,7 @@ def train_handler(request: data_models.TrainRequest) -> data_models.TrainRespons
         ModelType(request.model.name), request.model.configuration
     )
     with mlflow.start_run(
-        run_name=f"{model.NAME}__{train_dataset.NAME}"
+        run_name=f"{model.NAME}__{request.dataset_name}"
     ):
         mlflow.log_params(model.config.model_dump())
         model = model.fit(train_dataset)
