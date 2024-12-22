@@ -13,3 +13,4 @@ streamlit==1.40.2
 frozendict==2.4.6
 mlflow==2.18.0
 strenum==0.4.15
+minio==7.2.13
