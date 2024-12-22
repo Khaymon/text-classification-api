@@ -10,6 +10,8 @@ services:
     environment:
       - PROJECT_ROOT=/app
       - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     volumes:
       - .:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8005 --reload
@@ -38,12 +40,21 @@ services:
     command: streamlit run src/streamlit_app.py --server.port=8501 --server.address=0.0.0.0
   
   mlflow:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: mlflow/mlflow
     ports:
       - "5000:5000"
     volumes:
       - ./mlruns:/mlruns
     command: ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000"]
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./minio/data:/data
+    environment:
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+    command: ["server", "/data"]
 
