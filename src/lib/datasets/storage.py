@@ -15,8 +15,8 @@ class DatasetsStorage:
     ENDPOINT = f"{os.environ.get('MINIO_HOST', 'localhost')}:{os.environ.get('MINIO_PORT', '9000')}"
     client = minio.Minio(
         ENDPOINT,
-        access_key=os.environ.get("MINIO_ACCESS_KEY", "minioadmin"),
-        secret_key=os.environ.get("MINIO_SECRET_KEY", "minioadmin"),
+        access_key=os.environ.get("MINIO_ROOT_USER", "minioadmin"),
+        secret_key=os.environ.get("MINIO_ROOT_PASSWORD", "minioadmin"),
         secure=False,
     )
 
