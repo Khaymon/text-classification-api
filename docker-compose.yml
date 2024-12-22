@@ -32,8 +32,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8501:8501"
-    volumes:
-      - .:/app
     environment:
       - API_HOST=fastapi
       - API_PORT=8005
