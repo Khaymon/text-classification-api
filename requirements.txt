@@ -12,3 +12,4 @@ numpy==1.26.4
 streamlit==1.40.2
 frozendict==2.4.6
 mlflow==2.18.0
+strenum==0.4.15

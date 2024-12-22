@@ -23,7 +23,7 @@ class ModelsFactory:
         elif model_type == ModelType.logistic_regression:
             return LogisticRegressionModel
 
-        raise ValueError(f"Unknown model type: {model}")
+        raise ValueError(f"Unknown model type: {model_type}")
 
     @staticmethod
     def create(model_type: ModelType, model_config: "ModelConfig") -> "ModelInterface":
