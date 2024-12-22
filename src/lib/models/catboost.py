@@ -16,7 +16,7 @@ class CatBoostModel(ModelInterface):
 
         self._model = CatBoostClassifier(**(config.model_configuration or {}))
 
-    def fit(self, train_dataset: Dataset) -> T.Self:
+    def fit(self, train_dataset: Dataset) -> 'CatBoostModel':
         data = train_dataset.to_pandas()
         X = data.drop(["target"], axis=1)
         y = data["target"]
@@ -33,7 +33,7 @@ class CatBoostModel(ModelInterface):
     def _save(self, path: Path) -> None:
         self._model.save_model(path / "model.cbm")
 
-    def _load(self, path: Path) -> T.Self:
+    def _load(self, path: Path) -> 'CatBoostModel':
         self._model.load_model(path / "model.cbm")
 
         return self

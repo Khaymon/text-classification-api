@@ -32,7 +32,7 @@ class ComposePreprocessor(DataPreprocessorInterface):
         """
         self._preprocessors = preprocessors
 
-    def fit(self, data: pd.DataFrame | pd.Series) -> T.Self:
+    def fit(self, data: pd.DataFrame | pd.Series) -> 'ComposePreprocessor':
         """
         Fit all preprocessors on the provided data.
 
@@ -61,14 +61,10 @@ class ComposePreprocessor(DataPreprocessorInterface):
         for preprocessor in self._preprocessors:
             result_data = preprocessor.transform(result_data)
 
-        LOGGER.info(
-            f"Obtained features {list(result_data.columns)} after preprocessing"
-        )
-
         return result_data
 
     @classmethod
-    def from_config(cls, config: ComposePrerpocessorConfig) -> T.Self:
+    def from_config(cls, config: ComposePrerpocessorConfig) -> 'ComposePreprocessor':
         """
         Create a ComposePreprocessor instance from a configuration.
 

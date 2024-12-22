@@ -70,7 +70,7 @@ class ModelInterface(abc.ABC):
         self._save(path)
 
     @classmethod
-    def load(cls, path: Path) -> T.Self:
+    def load(cls, path: Path) -> 'ModelInterface':
         """
         Load a model instance from the specified path.
 
@@ -96,7 +96,7 @@ class ModelInterface(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def _load(self, path: Path) -> T.Self:
+    def _load(self, path: Path) -> 'ModelInterface':
         """
         Abstract method to handle model-specific loading logic.
 

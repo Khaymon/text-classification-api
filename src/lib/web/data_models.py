@@ -1,4 +1,6 @@
 from pathlib import Path
+from typing import Optional
+
 from pydantic import BaseModel, field_validator
 
 from src.lib.models import ModelConfig, ModelType
@@ -57,6 +59,7 @@ class TrainRequest(BaseModel):
 
 class TrainResponse(BaseModel):
     artifact_name: str
+    metrics: Optional[dict[str, float]]
 
 
 class PredictRequest(BaseModel):

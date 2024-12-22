@@ -15,7 +15,7 @@ class TfIdfPreprocessor(DataPreprocessorInterface):
 
         self._transformer = TfidfVectorizer()
 
-    def fit(self, data: pd.DataFrame) -> T.Self:
+    def fit(self, data: pd.DataFrame) -> 'TfIdfPreprocessor':
         self._transformer.fit(data[self._text_column])
 
         return self

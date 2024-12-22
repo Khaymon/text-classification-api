@@ -5,8 +5,8 @@ from pydantic import BaseModel
 class Data(BaseModel):
     texts: list[str]
 
-    def to_pandas(self) -> pd.Series:
-        return pd.Series({"text": self.texts})
+    def to_pandas(self) -> pd.DataFrame:
+        return pd.DataFrame({"text": self.texts})
 
 
 class Dataset(BaseModel):

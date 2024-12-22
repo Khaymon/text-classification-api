@@ -1,3 +1,6 @@
+import mlflow
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+
 from src.lib.models import ModelsFactory, ModelInterface, ModelType
 from src.lib.datasets.data_models import Data, Dataset
 from src.lib.datasets.storage import DatasetsStorage
@@ -22,9 +25,26 @@ def train_handler(request: data_models.TrainRequest) -> data_models.TrainRespons
     train_dataset = datasets_storage.download(request.dataset_name)
     model = ModelsFactory.create(
         ModelType(request.model.name), request.model.configuration
-    ).fit(train_dataset)
+    )
+    mlflow.set_experiment(experiment_name=request.dataset_name)
+    with mlflow.start_run(
+        run_name=model.NAME
+    ):
+        mlflow.log_params(model.config.model_dump())
+        model = model.fit(train_dataset)
+        predictions = model.predict(train_dataset)
+        metrics = {
+            "accuracy": accuracy_score(train_dataset.targets, predictions),
+            "f1_score": f1_score(train_dataset.targets, predictions),
+            "precision": precision_score(train_dataset.targets, predictions),
+            "recall": recall_score(train_dataset.targets, predictions),
+        }
+        mlflow.log_metrics(metrics)
 
-    return data_models.TrainResponse(artifact_name=STORAGE.save(model, request.dataset_name))
+    return data_models.TrainResponse(
+        artifact_name=STORAGE.save(model, request.dataset_name),
+        metrics=metrics,
+    )
 
 
 def predict_handler(request: data_models.PredictRequest) -> data_models.PredictResponse:
